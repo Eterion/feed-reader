@@ -23,7 +23,11 @@ const articleLink = computed(() => {
 const article = computed(() => {
   return articles.value.find(({ link }) => {
     return link === articleLink.value;
-  })?.data;
+  });
+});
+
+const articleData = computed(() => {
+  return article.value?.data;
 });
 
 const notSelected = computed(() => {
@@ -36,23 +40,23 @@ const DateFormatter = new Intl.DateTimeFormat('en-US', {
 });
 
 const formattedDate = computed(() => {
-  if (article.value?.isoDate)
-    return DateFormatter.format(parseISO(article.value.isoDate));
+  if (articleData.value?.isoDate)
+    return DateFormatter.format(parseISO(articleData.value.isoDate));
   return 'Unknown date';
 });
 
 const contentHtml = computed(() => {
   const unsafeContent =
-    article.value?.content ||
-    article.value?.contentSnippet ||
-    article.value?.summary;
+    articleData.value?.content ||
+    articleData.value?.contentSnippet ||
+    articleData.value?.summary;
   if (unsafeContent) return sanitize(unsafeContent);
 });
 
 watchImmediate(
-  [() => props.feedId, articleLink],
-  async ([feedId, articleLink]) => {
-    if (feedId && articleLink)
+  [() => props.feedId, articleLink, () => article.value?.isRead],
+  async ([feedId, articleLink, isRead]) => {
+    if (feedId && articleLink && !isRead)
       await feedsStore.markRead([
         { feedId, link: decodeURIComponent(articleLink) },
       ]);
@@ -63,10 +67,10 @@ watchImmediate(
 <template>
   <div :class="$style.el">
     <div v-if="notSelected"></div>
-    <div :class="$style.article" v-else-if="article">
+    <div :class="$style.article" v-else-if="articleData">
       <h1 :class="$style.title">
-        <a :href="article.link" target="_blank" rel="noreferrer">
-          {{ article.title }}
+        <a :href="articleData.link" target="_blank" rel="noreferrer">
+          {{ articleData.title }}
         </a>
       </h1>
       <div :class="$style.date">{{ formattedDate }}</div>

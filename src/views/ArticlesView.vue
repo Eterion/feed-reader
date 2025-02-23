@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import ArticleItem from '@/components/ArticleItem.vue';
 import { useFeed } from '@/utils/useFeed';
 import { useFeedsStore } from '@/utils/useFeedsStore';
-import { isAfter, parseISO } from 'date-fns';
+import {
+  endOfDay,
+  isAfter,
+  isBefore,
+  isToday,
+  isWithinInterval,
+  parseISO,
+  sub,
+} from 'date-fns';
 import { computed } from 'vue';
-import { type RouteLocationRaw } from 'vue-router';
 
 const props = defineProps<{
   feedId?: string;
@@ -13,12 +21,19 @@ const props = defineProps<{
 const feedsStore = useFeedsStore();
 const { articles } = useFeed(() => props.feedId);
 
+const articleLink = computed(() => {
+  if (props.articleLink) {
+    return decodeURIComponent(props.articleLink);
+  }
+});
+
+const now = new Date();
 const mappedArticles = computed(() => {
   return articles.value.map((article) => ({
     ...article,
-    to: {
-      params: { articleLink: encodeURIComponent(article.link) },
-    } satisfies RouteLocationRaw,
+    isUnread: !article.isRead,
+    isActive: article.link === articleLink.value,
+    isoDate: article.data.isoDate ? parseISO(article.data.isoDate) : now,
     markUnread: async () => {
       if (props.feedId) {
         await feedsStore.markUnread([
@@ -31,14 +46,36 @@ const mappedArticles = computed(() => {
 
 const sortedArticles = computed(() => {
   return [...mappedArticles.value].sort((a, b) => {
-    const aDate = a.data.isoDate;
-    const bDate = b.data.isoDate;
-    if (aDate && bDate)
-      return isAfter(parseISO(aDate), parseISO(bDate)) ? -1 : 1;
-    if (aDate) return -1;
-    if (bDate) return 1;
-    return 0;
+    return isAfter(a.isoDate, b.isoDate) ? -1 : 1;
   });
+});
+
+const groupedArticles = computed(() => {
+  const yesterday = sub(endOfDay(now), { days: 1 });
+  const weekAgo = sub(yesterday, { weeks: 1 });
+  return [
+    {
+      title: 'Today',
+      items: sortedArticles.value.filter((article) => {
+        return isToday(article.isoDate);
+      }),
+    },
+    {
+      title: 'This Week',
+      items: sortedArticles.value.filter((article) => {
+        return isWithinInterval(article.isoDate, {
+          start: yesterday,
+          end: weekAgo,
+        });
+      }),
+    },
+    {
+      title: 'Two Weeks Ago',
+      items: sortedArticles.value.filter((article) => {
+        return isBefore(article.isoDate, weekAgo);
+      }),
+    },
+  ];
 });
 
 const notSelected = computed(() => {
@@ -47,26 +84,50 @@ const notSelected = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div :class="$style.el">
     <div v-if="notSelected">Select a feed</div>
-    <ul v-else-if="sortedArticles.length">
-      <li v-for="article in sortedArticles" :key="article.link">
-        <RouterLink
-          :to="article.to"
-          :class="[$style.link, { [$style.unread]: !article.isRead }]">
-          {{ article.data.title }}
-        </RouterLink>
-        | <a href="" @click.prevent="article.markUnread">Mark unread</a>
-      </li>
-    </ul>
+    <div v-else-if="sortedArticles.length">
+      <template v-for="group in groupedArticles" :key="group.title">
+        <div v-if="group.items.length" :class="$style.group">
+          <div :class="$style.group_title">{{ group.title }}</div>
+          <ul :class="$style.list">
+            <li v-for="article in group.items" :key="article.link">
+              <ArticleItem
+                :active="article.isActive"
+                :link="article.link"
+                :title="article.data.title"
+                :unread="article.isUnread"
+                @mark-unread="article.markUnread"></ArticleItem>
+            </li>
+          </ul>
+        </div>
+      </template>
+    </div>
     <div v-else>No articles found</div>
   </div>
 </template>
 
 <style module lang="scss">
-.link {
-  &.unread {
-    font-weight: bold;
+.el {
+  padding: 12px;
+}
+
+.group {
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+  &_title {
+    color: var(--text-light);
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  & > :where(li):not(:last-child) {
+    margin-bottom: 1px;
   }
 }
 </style>

@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import FeedItem from '@/components/FeedItem.vue';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+
+const props = defineProps<{
+  feedId?: string;
+}>();
 
 const feedsStore = useFeedsStore();
 const router = useRouter();
@@ -29,7 +34,7 @@ const feeds = computed(() => {
     });
     return {
       ...feed,
-      hasUnread: unreadArticles.length > 0,
+      isActive: feed.id === props.feedId,
       unreadCount: unreadArticles.length,
       rename: async () => {
         const name = prompt('New name');
@@ -73,28 +78,55 @@ const feeds = computed(() => {
 </script>
 
 <template>
-  <div>
-    <button type="button" @click="addFeed">Add</button>
-    <ul>
+  <div :class="$style.el">
+    <button type="button" @click="addFeed" :class="$style.button">
+      Add Feed
+    </button>
+    <ul :class="$style.list">
       <li v-for="feed in feeds" :key="feed.id">
-        <RouterLink
-          :to="`/${feed.id}`"
-          :class="[$style.link, { [$style.unread]: feed.hasUnread }]">
-          {{ feed.name }} ({{ feed.unreadCount }})
-        </RouterLink>
-        | <a href="" @click.prevent="feed.rename">Rename</a> |
-        <a href="" @click.prevent="feed.remove">Remove</a> |
-        <a href="" @click.prevent="feed.markRead">Mark read</a> |
-        <a href="" @click.prevent="feed.markUnread">Mark unread</a>
+        <FeedItem
+          :active="feed.isActive"
+          :id="feed.id"
+          :name="feed.name"
+          :unread-count="feed.unreadCount"
+          :url="feed.url"
+          @mark-read="feed.markRead"
+          @mark-unread="feed.markUnread"
+          @remove="feed.remove"
+          @rename="feed.rename" />
       </li>
     </ul>
   </div>
 </template>
 
 <style module lang="scss">
-.link {
-  &.unread {
-    font-weight: bold;
+.el {
+  padding: 12px;
+}
+
+.button {
+  background-color: var(--foreground);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  box-shadow: var(--low-shadow);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  transition-duration: 200ms;
+  transition-property: background-color, border-color;
+  &:hover {
+    background-color: var(--hover-surface);
+    border-color: var(--dark-border);
+  }
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  &:where(li):not(:last-child) {
+    margin-bottom: 1px;
   }
 }
 </style>

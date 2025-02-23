@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --watch src/server.ts --exec tsx src/server.ts --dev",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "dev": "nodemon --watch src/server.ts --exec tsx src/server.ts --dev",
+    "preview": "vite preview",
+    "type-check": "vue-tsc -b"
   },
   "dependencies": {
     "@fastify/sensible": "^6.0.3",

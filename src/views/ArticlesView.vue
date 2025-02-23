@@ -90,7 +90,7 @@ const notSelected = computed(() => {
 
 <template>
   <div :class="$style.el">
-    <div v-if="notSelected">Select a feed</div>
+    <div v-if="notSelected"></div>
     <div v-else-if="sortedArticles.length">
       <template v-for="group in groupedArticles" :key="group.title">
         <div v-if="group.items.length" :class="$style.group">

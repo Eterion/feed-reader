@@ -109,8 +109,6 @@ const mappedItems = computed(() => {
     },
   }));
 });
-
-defineSlots<{ [Key in TIconSlot]: () => unknown }>();
 </script>
 
 <template>
@@ -187,12 +185,13 @@ defineSlots<{ [Key in TIconSlot]: () => unknown }>();
   color: var(--text);
   column-gap: 1ch;
   display: flex;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   padding: 6px 18px 6px 10px;
   text-decoration: none;
   transition-duration: 200ms;
   transition-property: background-color;
   &:hover {
+    --icon-color: var(--text);
     background-color: var(--hover-surface);
   }
   &.danger {

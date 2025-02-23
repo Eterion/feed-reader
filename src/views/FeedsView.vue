@@ -32,7 +32,7 @@ async function addFeed() {
     }
 }
 
-const feeds = computed(() => {
+const mappedFeeds = computed(() => {
   return feedsStore.feeds.map((feed) => {
     const feedArticles = feedsStore.articles.filter(
       (article) => article.feedId === feed.id,
@@ -86,6 +86,14 @@ const feeds = computed(() => {
     };
   });
 });
+
+const sortedFeeds = computed(() => {
+  return mappedFeeds.value.sort((a, b) => {
+    const aName = a.name || a.url;
+    const bName = b.name || b.url;
+    return aName.localeCompare(bName);
+  });
+});
 </script>
 
 <template>
@@ -98,7 +106,7 @@ const feeds = computed(() => {
     </header>
     <div :class="$style.content">
       <ul :class="$style.list">
-        <li v-for="feed in feeds" :key="feed.id">
+        <li v-for="feed in sortedFeeds" :key="feed.id">
           <FeedItem
             :active="feed.isActive"
             :id="feed.id"

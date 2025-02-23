@@ -11,8 +11,15 @@
   "dependencies": {
     "@fastify/sensible": "^6.0.3",
     "@fastify/vite": "^7.0.1",
+    "@vueuse/core": "^12.7.0",
+    "axios": "^1.7.9",
+    "date-fns": "^4.1.0",
+    "es-toolkit": "^1.32.0",
     "fastify": "^5.2.1",
-    "vue": "^3.5.13"
+    "pinia": "^3.0.1",
+    "rss-parser": "^3.13.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.5",
@@ -22,6 +29,7 @@
     "prettier": "^3.5.2",
     "sass": "^1.85.0",
     "tsx": "^4.19.3",
+    "type-fest": "^4.35.0",
     "typescript": "^5.7.3",
     "vite": "^6.1.1",
     "vue-tsc": "^2.2.2"

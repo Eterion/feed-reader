@@ -56,7 +56,7 @@ const contentHtml = computed(() => {
 watchImmediate(
   [() => props.feedId, articleLink, () => article.value?.isRead],
   async ([feedId, articleLink, isRead]) => {
-    if (feedId && articleLink && !isRead)
+    if (feedId && articleLink && isRead === false)
       await feedsStore.markRead([
         { feedId, link: decodeURIComponent(articleLink) },
       ]);

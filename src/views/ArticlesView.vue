@@ -123,7 +123,7 @@ const notSelected = computed(() => {
     margin-bottom: 1rem;
   }
   &_title {
-    color: var(--text-light);
+    color: var(--light-text);
     font-size: 0.75rem;
     padding: 10px;
   }

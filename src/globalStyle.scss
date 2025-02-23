@@ -12,9 +12,9 @@
   --dark-border: #adb5bd;
   --foreground: #fff;
   --hover-surface: #e9ecef;
+  --light-text: #868e96;
   --primary-surface: #4c6ef5;
   --primary: #3b5bdb;
-  --text-light: #868e96;
   --text-on-primary-surface: #fff;
   --text: #212529;
   // Shadows
@@ -30,6 +30,20 @@
     0px 1px 1px rgba(3, 7, 18, 0.1), 0px 5px 5px rgba(3, 7, 18, 0.08),
     0px 12px 12px rgba(3, 7, 18, 0.06), 0px 20px 20px rgba(3, 7, 18, 0.04),
     0px 32px 32px rgba(3, 7, 18, 0.02);
+}
+
+.dark {
+  --background: #212529;
+  --border: #495057;
+  --danger: #ffa8a8;
+  --dark-border: #868e96;
+  --foreground: #212529;
+  --hover-surface: #343a40;
+  --light-text: #adb5bd;
+  --primary-surface: #bac8ff;
+  --primary: #bac8ff;
+  --text-on-primary-surface: #212529;
+  --text: #f8f9fa;
 }
 
 :root {

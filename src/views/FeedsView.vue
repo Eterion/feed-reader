@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FeedItem from '@/components/FeedItem.vue';
+import ThemeToggle from '@/components/ThemeToggle.vue';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import { useNow } from '@vueuse/core';
 import { formatDistance } from 'date-fns';
@@ -102,6 +103,7 @@ const sortedFeeds = computed(() => {
       <button type="button" @click="addFeed" :class="$style.addButton">
         Add Feed
       </button>
+      <ThemeToggle />
       <div :class="$style.lastCheckedOn">Last checked {{ lastCheckedOn }}</div>
     </header>
     <div :class="$style.content">
@@ -126,15 +128,16 @@ const sortedFeeds = computed(() => {
 <style module lang="scss">
 .header {
   align-items: center;
+  background-color: var(--foreground);
+  column-gap: 0.5ch;
   display: flex;
+  padding: 12px;
   position: sticky;
   top: 0;
-  background-color: var(--foreground);
-  padding: 12px;
 }
 
 .lastCheckedOn {
-  color: var(--text-light);
+  color: var(--light-text);
   flex-grow: 1;
   font-size: 12px;
   text-align: right;

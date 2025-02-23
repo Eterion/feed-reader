@@ -97,7 +97,7 @@ watchImmediate(
 }
 
 .date {
-  color: var(--text-light);
+  color: var(--light-text);
   font-size: 0.875rem;
   margin-bottom: 1rem;
 }

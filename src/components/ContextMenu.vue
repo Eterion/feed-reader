@@ -179,7 +179,7 @@ const mappedItems = computed(() => {
 }
 
 .item {
-  --icon-color: var(--text-light);
+  --icon-color: var(--light-text);
   align-items: center;
   border-radius: 6px;
   color: var(--text);

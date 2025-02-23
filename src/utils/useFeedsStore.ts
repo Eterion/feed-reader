@@ -8,6 +8,7 @@ import { ref } from 'vue';
 export const useFeedsStore = defineStore('feeds', () => {
   const articles = ref<Article[]>([]);
   const feeds = ref<Feed[]>([]);
+  const lastCheckedOn = ref<Date>();
 
   async function refreshFeeds() {
     const { data } = await axios.get<{
@@ -16,6 +17,7 @@ export const useFeedsStore = defineStore('feeds', () => {
     }>('/refresh');
     articles.value = data.articles;
     feeds.value = data.feeds;
+    lastCheckedOn.value = new Date();
   }
 
   async function addFeed(url: string) {
@@ -64,6 +66,7 @@ export const useFeedsStore = defineStore('feeds', () => {
     addFeed,
     articles,
     feeds,
+    lastCheckedOn,
     markRead,
     markUnread,
     refreshFeeds,

@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
+import type { ComponentProps } from 'vue-component-type-helpers';
 import type { RouteLocationRaw } from 'vue-router';
+import EyeIcon from './@icons/EyeIcon.vue';
+import EyeOffIcon from './@icons/EyeOffIcon.vue';
+import ContextMenu from './ContextMenu.vue';
 
 const props = defineProps<{
   active?: boolean;
@@ -10,29 +14,65 @@ const props = defineProps<{
   unread?: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
+  markRead: [];
   markUnread: [];
 }>();
 
+const link = useTemplateRef('link');
 const to = computed<RouteLocationRaw>(() => ({
   params: {
     articleLink: props.link,
   },
 }));
+
+const isContextMenuOpen = ref(false);
+const contextMenuItems = computed<
+  ComponentProps<typeof ContextMenu<'markRead' | 'markUnread'>>['items']
+>(() => [
+  {
+    caption: 'Mark as read',
+    iconSlot: 'markRead',
+    onClick: () => emit('markRead'),
+  },
+  {
+    caption: 'Mark as unread',
+    iconSlot: 'markUnread',
+    onClick: () => emit('markUnread'),
+  },
+]);
+
+function ensureMarkRead() {
+  if (props.active && props.unread) {
+    emit('markRead');
+  }
+}
 </script>
 
 <template>
-  <RouterLink
-    :to="to"
-    :class="[
-      $style.link,
-      {
-        [$style.active]: active,
-        [$style.unread]: unread,
-      },
-    ]">
-    <span :class="$style.title">{{ title || link }}</span>
-    <span v-if="unread" :class="$style.dot"></span>
+  <RouterLink v-slot="{ href, navigate }" custom :to="to">
+    <a
+      ref="link"
+      :href="href"
+      :class="[
+        $style.link,
+        {
+          [$style.active]: active,
+          [$style.unread]: unread,
+          [$style.open]: isContextMenuOpen,
+        },
+      ]"
+      @click="(navigate($event), ensureMarkRead())">
+      <span :class="$style.title">{{ title || link }}</span>
+      <span v-if="unread" :class="$style.dot"></span>
+    </a>
+    <ContextMenu
+      v-model:open="isContextMenuOpen"
+      :reference-element="link"
+      :items="contextMenuItems">
+      <template #markRead><EyeIcon /></template>
+      <template #markUnread><EyeOffIcon /></template>
+    </ContextMenu>
   </RouterLink>
 </template>
 
@@ -53,6 +93,7 @@ const to = computed<RouteLocationRaw>(() => ({
     color: var(--text-on-primary-surface);
     background-color: var(--primary-surface);
   }
+  &:not(.active).open,
   &:not(.active):hover {
     background-color: var(--hover-surface);
   }

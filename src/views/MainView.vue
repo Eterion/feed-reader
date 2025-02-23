@@ -3,6 +3,7 @@ import { useFeed } from '@/utils/useFeed';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import { watchImmediate } from '@vueuse/core';
 import { parseISO } from 'date-fns';
+import sanitize from 'sanitize-html';
 import { computed } from 'vue';
 
 const props = defineProps<{
@@ -40,7 +41,14 @@ const formattedDate = computed(() => {
   return 'Unknown date';
 });
 
-// Mark article as read when viewed
+const contentHtml = computed(() => {
+  const unsafeContent =
+    article.value?.content ||
+    article.value?.contentSnippet ||
+    article.value?.summary;
+  if (unsafeContent) return sanitize(unsafeContent);
+});
+
 watchImmediate(
   [() => props.feedId, articleLink],
   async ([feedId, articleLink]) => {
@@ -62,14 +70,14 @@ watchImmediate(
         </a>
       </h1>
       <div :class="$style.date">{{ formattedDate }}</div>
-      <p>{{ article.content ?? article.summary }}</p>
+      <p v-html="contentHtml"></p>
     </div>
   </div>
 </template>
 
 <style module lang="scss">
 .el {
-  padding: 36px;
+  padding: 36px 36px 64px;
 }
 
 .title {

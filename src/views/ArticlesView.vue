@@ -34,12 +34,17 @@ const mappedArticles = computed(() => {
     isUnread: !article.isRead,
     isActive: article.link === articleLink.value,
     isoDate: article.data.isoDate ? parseISO(article.data.isoDate) : now,
+    markRead: async () => {
+      if (props.feedId)
+        await feedsStore.markRead([
+          { feedId: props.feedId, link: article.link },
+        ]);
+    },
     markUnread: async () => {
-      if (props.feedId) {
+      if (props.feedId)
         await feedsStore.markUnread([
           { feedId: props.feedId, link: article.link },
         ]);
-      }
     },
   }));
 });
@@ -97,7 +102,8 @@ const notSelected = computed(() => {
                 :link="article.link"
                 :title="article.data.title"
                 :unread="article.isUnread"
-                @mark-unread="article.markUnread"></ArticleItem>
+                @mark-read="article.markRead"
+                @mark-unread="article.markUnread" />
             </li>
           </ul>
         </div>
@@ -109,7 +115,7 @@ const notSelected = computed(() => {
 
 <style module lang="scss">
 .el {
-  padding: 12px;
+  padding: 12px 12px 64px;
 }
 
 .group {
@@ -119,7 +125,7 @@ const notSelected = computed(() => {
   &_title {
     color: var(--text-light);
     font-size: 0.75rem;
-    padding: 6px 10px;
+    padding: 10px;
   }
 }
 

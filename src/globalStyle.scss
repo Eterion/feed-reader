@@ -8,20 +8,28 @@
 :root {
   --background: #fff;
   --border: #dee2e6;
+  --danger: #e03131;
   --dark-border: #adb5bd;
   --foreground: #fff;
   --hover-surface: #e9ecef;
-  --primary-surface: #228be6;
-  --primary: #1971c2;
+  --primary-surface: #4c6ef5;
+  --primary: #3b5bdb;
   --text-light: #868e96;
   --text-on-primary-surface: #fff;
   --text: #212529;
-  --unread-surface: #e7f5ff;
   // Shadows
   --low-shadow:
     0px 0px 0px rgba(3, 7, 18, 0.1), 0px 1px 1px rgba(3, 7, 18, 0.08),
-    1px 1px 1px rgba(3, 7, 18, 0.06), 1px 3px 3px rgba(3, 7, 18, 0.04),
-    2px 4px 4px rgba(3, 7, 18, 0.02);
+    0px 1px 1px rgba(3, 7, 18, 0.06), 0px 3px 3px rgba(3, 7, 18, 0.04),
+    0px 4px 4px rgba(3, 7, 18, 0.02);
+  --medium-shadow:
+    0px 0px 0px rgba(3, 7, 18, 0.1), 0px 1px 1px rgba(3, 7, 18, 0.08),
+    0px 3px 3px rgba(3, 7, 18, 0.06), 0px 5px 5px rgba(3, 7, 18, 0.04),
+    0px 8px 8px rgba(3, 7, 18, 0.02);
+  --high-shadow:
+    0px 1px 1px rgba(3, 7, 18, 0.1), 0px 5px 5px rgba(3, 7, 18, 0.08),
+    0px 12px 12px rgba(3, 7, 18, 0.06), 0px 20px 20px rgba(3, 7, 18, 0.04),
+    0px 32px 32px rgba(3, 7, 18, 0.02);
 }
 
 :root {

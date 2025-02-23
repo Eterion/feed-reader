@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import FeedItem from '@/components/FeedItem.vue';
 import { useFeedsStore } from '@/utils/useFeedsStore';
+import { useNow } from '@vueuse/core';
+import { formatDistance } from 'date-fns';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -8,8 +10,17 @@ const props = defineProps<{
   feedId?: string;
 }>();
 
-const feedsStore = useFeedsStore();
 const router = useRouter();
+const feedsStore = useFeedsStore();
+const now = useNow();
+
+const lastCheckedOn = computed(() => {
+  if (feedsStore.lastCheckedOn)
+    return formatDistance(feedsStore.lastCheckedOn, now.value, {
+      addSuffix: true,
+      includeSeconds: false,
+    });
+});
 
 async function addFeed() {
   const url = prompt('Feed url');
@@ -78,41 +89,59 @@ const feeds = computed(() => {
 </script>
 
 <template>
-  <div :class="$style.el">
-    <button type="button" @click="addFeed" :class="$style.button">
-      Add Feed
-    </button>
-    <ul :class="$style.list">
-      <li v-for="feed in feeds" :key="feed.id">
-        <FeedItem
-          :active="feed.isActive"
-          :id="feed.id"
-          :name="feed.name"
-          :unread-count="feed.unreadCount"
-          :url="feed.url"
-          @mark-read="feed.markRead"
-          @mark-unread="feed.markUnread"
-          @remove="feed.remove"
-          @rename="feed.rename" />
-      </li>
-    </ul>
+  <div>
+    <header :class="$style.header">
+      <button type="button" @click="addFeed" :class="$style.addButton">
+        Add Feed
+      </button>
+      <div :class="$style.lastCheckedOn">Last checked {{ lastCheckedOn }}</div>
+    </header>
+    <div :class="$style.content">
+      <ul :class="$style.list">
+        <li v-for="feed in feeds" :key="feed.id">
+          <FeedItem
+            :active="feed.isActive"
+            :id="feed.id"
+            :name="feed.name"
+            :unread-count="feed.unreadCount"
+            :url="feed.url"
+            @mark-read="feed.markRead"
+            @mark-unread="feed.markUnread"
+            @remove="feed.remove"
+            @rename="feed.rename" />
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <style module lang="scss">
-.el {
+.header {
+  align-items: center;
+  display: flex;
+  position: sticky;
+  top: 0;
+  background-color: var(--foreground);
   padding: 12px;
 }
 
-.button {
+.lastCheckedOn {
+  color: var(--text-light);
+  flex-grow: 1;
+  font-size: 12px;
+  text-align: right;
+  padding: 0 10px;
+}
+
+.addButton {
   background-color: var(--foreground);
   border-radius: 6px;
   border: 1px solid var(--border);
   box-shadow: var(--low-shadow);
   color: var(--text);
   cursor: pointer;
+  flex-shrink: 0;
   font-size: 0.875rem;
-  margin-bottom: 12px;
   padding: 6px 10px;
   transition-duration: 200ms;
   transition-property: background-color, border-color;
@@ -120,6 +149,10 @@ const feeds = computed(() => {
     background-color: var(--hover-surface);
     border-color: var(--dark-border);
   }
+}
+
+.content {
+  padding: 0 12px 64px;
 }
 
 .list {

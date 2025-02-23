@@ -12,11 +12,15 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <div :class="$style.feeds">
-    <RouterView name="feeds" />
+  <div :class="[$style.sidebar, $style.feeds]">
+    <div :class="$style.sidebar_scrollable">
+      <RouterView name="feeds" />
+    </div>
   </div>
-  <div :class="$style.articles">
-    <RouterView name="articles" />
+  <div :class="[$style.sidebar, $style.articles]">
+    <div :class="$style.sidebar_scrollable">
+      <RouterView name="articles" />
+    </div>
   </div>
   <main :class="$style.main">
     <RouterView />
@@ -24,25 +28,26 @@ useIntervalFn(() => {
 </template>
 
 <style module lang="scss">
-.feeds {
+.sidebar {
   border-right: 1px solid var(--border);
   bottom: 0;
-  left: 0;
-  overflow-y: auto;
   position: fixed;
-  scrollbar-width: thin;
   top: 0;
+  &_scrollable {
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    width: 100%;
+  }
+}
+
+.feeds {
+  left: 0;
   width: var(--feeds-width);
 }
 
 .articles {
-  border-right: 1px solid var(--border);
-  bottom: 0;
   left: var(--feeds-width);
-  overflow-y: auto;
-  position: fixed;
-  scrollbar-width: thin;
-  top: 0;
   width: var(--articles-width);
 }
 

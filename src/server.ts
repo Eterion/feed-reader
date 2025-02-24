@@ -1,6 +1,7 @@
 import fastifySensible from '@fastify/sensible';
 import fastifyVite from '@fastify/vite';
 import { randomBytes } from 'crypto';
+import { isAfter, parseISO } from 'date-fns';
 import { omit } from 'es-toolkit';
 import fastify from 'fastify';
 import { access, constants, readFile, writeFile } from 'node:fs/promises';
@@ -63,21 +64,31 @@ async function downloadFeedArticles(feedIds: string[] = []) {
       data: item,
     })),
   );
+  const now = new Date();
+  const getArticleDate = (articleData: Article['data']) =>
+    articleData.isoDate ? parseISO(articleData.isoDate) : now;
   items.forEach((item) => {
     const itemLink = item.data.link;
+    const itemDate = getArticleDate(item.data);
     if (itemLink) {
-      const isDownloadedOrOlder = db.articles.some((article) => {
+      const downloadedArticle = db.articles.find((article) => {
         const isSameFeed = article.feedId === item.feedId;
         const isSameLink = article.link === itemLink;
         return isSameFeed && isSameLink;
       });
-      if (!isDownloadedOrOlder)
+      if (downloadedArticle) {
+        if (isAfter(itemDate, getArticleDate(downloadedArticle.data))) {
+          downloadedArticle.data = item.data;
+          downloadedArticle.isRead = false;
+        }
+      } else {
         db.articles.push({
           data: item.data,
           feedId: item.feedId,
           isRead: false,
           link: itemLink,
         });
+      }
     }
   });
   await writeDb(db);

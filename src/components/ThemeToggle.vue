@@ -19,16 +19,20 @@ const isDark = useDark();
 .el {
   align-items: center;
   background-color: transparent;
+  border-radius: 6px;
   border: none;
   color: var(--light-text);
   cursor: pointer;
   display: flex;
-  height: 36px;
   justify-content: center;
-  width: 36px;
+  padding: 6px;
+  &:hover {
+    background-color: var(--hover-surface);
+    color: var(--text);
+  }
   :where(svg) {
-    height: 18px;
-    width: 18px;
+    height: 1rem;
+    width: 1rem;
   }
 }
 </style>

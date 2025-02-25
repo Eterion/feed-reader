@@ -9,15 +9,21 @@ export const useFeedsStore = defineStore('feeds', () => {
   const articles = ref<Article[]>([]);
   const feeds = ref<Feed[]>([]);
   const lastCheckedOn = ref<Date>();
+  const isLoading = ref(false);
 
   async function refreshFeeds() {
-    const { data } = await axios.get<{
-      articles: Article[];
-      feeds: Feed[];
-    }>('/refresh');
-    articles.value = data.articles;
-    feeds.value = data.feeds;
-    lastCheckedOn.value = new Date();
+    try {
+      isLoading.value = true;
+      const { data } = await axios.get<{
+        articles: Article[];
+        feeds: Feed[];
+      }>('/refresh');
+      articles.value = data.articles;
+      feeds.value = data.feeds;
+      lastCheckedOn.value = new Date();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function addFeed(url: string) {
@@ -66,6 +72,7 @@ export const useFeedsStore = defineStore('feeds', () => {
     addFeed,
     articles,
     feeds,
+    isLoading,
     lastCheckedOn,
     markRead,
     markUnread,

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import FeedItem from '@/components/FeedItem.vue';
+import LastCheckedOn from '@/components/LastCheckedOn.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import { useFeedsStore } from '@/utils/useFeedsStore';
-import { useNow } from '@vueuse/core';
-import { formatDistance } from 'date-fns';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -13,15 +12,6 @@ const props = defineProps<{
 
 const router = useRouter();
 const feedsStore = useFeedsStore();
-const now = useNow();
-
-const lastCheckedOn = computed(() => {
-  if (feedsStore.lastCheckedOn)
-    return formatDistance(feedsStore.lastCheckedOn, now.value, {
-      addSuffix: true,
-      includeSeconds: false,
-    });
-});
 
 async function addFeed() {
   const url = prompt('Feed url');
@@ -104,7 +94,12 @@ const sortedFeeds = computed(() => {
         Add Feed
       </button>
       <ThemeToggle />
-      <div :class="$style.lastCheckedOn">Last checked {{ lastCheckedOn }}</div>
+      <div v-if="feedsStore.lastCheckedOn" :class="$style.lastCheckedOn">
+        <LastCheckedOn
+          :date="feedsStore.lastCheckedOn"
+          :loading="feedsStore.isLoading"
+          @click="feedsStore.refreshFeeds" />
+      </div>
     </header>
     <div :class="$style.content">
       <ul :class="$style.list">
@@ -136,14 +131,6 @@ const sortedFeeds = computed(() => {
   top: 0;
 }
 
-.lastCheckedOn {
-  color: var(--light-text);
-  flex-grow: 1;
-  font-size: 12px;
-  text-align: right;
-  padding: 0 10px;
-}
-
 .addButton {
   background-color: var(--foreground);
   border-radius: 6px;
@@ -160,6 +147,12 @@ const sortedFeeds = computed(() => {
     background-color: var(--hover-surface);
     border-color: var(--dark-border);
   }
+}
+
+.lastCheckedOn {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 .content {

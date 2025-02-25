@@ -1,5 +1,11 @@
+<script lang="ts">
+const useContextMenuStore = defineStore('contextMenu', () => {
+  const activeInstances = ref<{ id: string; close: () => unknown }[]>([]);
+  return { activeInstances };
+});
+</script>
+
 <script setup lang="ts" generic="TIconSlot extends string = string">
-import { useContextMenuStore } from '@/utils/useContextMenuStore';
 import {
   autoUpdate,
   flip,
@@ -14,6 +20,7 @@ import {
   whenever,
 } from '@vueuse/core';
 import { cloneDeep, remove } from 'es-toolkit';
+import { defineStore } from 'pinia';
 import type { Promisable } from 'type-fest';
 import {
   computed,

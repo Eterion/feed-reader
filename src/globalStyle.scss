@@ -30,6 +30,7 @@
     0px 1px 1px rgba(3, 7, 18, 0.1), 0px 5px 5px rgba(3, 7, 18, 0.08),
     0px 12px 12px rgba(3, 7, 18, 0.06), 0px 20px 20px rgba(3, 7, 18, 0.04),
     0px 32px 32px rgba(3, 7, 18, 0.02);
+  color-scheme: light;
 }
 
 .dark {
@@ -44,6 +45,7 @@
   --primary: #bac8ff;
   --text-on-primary-surface: #212529;
   --text: #f8f9fa;
+  color-scheme: dark;
 }
 
 :root {

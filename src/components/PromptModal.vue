@@ -5,6 +5,7 @@ const props = defineProps<{
   defaultValue?: string;
   message: string;
   onOk?: (value: string) => PromiseLike<unknown>;
+  title?: string;
 }>();
 
 defineEmits<{
@@ -35,6 +36,7 @@ async function submitForm(event: Event) {
 <template>
   <BaseModal
     v-model:visible="visible"
+    :title="title"
     :width="460"
     @hidden="$emit('hidden')"
     @hide="$emit('hide')"

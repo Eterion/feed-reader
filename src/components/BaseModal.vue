@@ -75,12 +75,10 @@ const hide = () => (visible.value = false);
 }
 
 .title {
-  border-bottom: 2px solid var(--border);
-  color: var(--text);
-  font-size: 1.25rem;
-  line-height: 1;
+  color: var(--light-text);
+  font-size: 0.875rem;
+  font-weight: normal;
   margin-bottom: 36px;
-  padding: 0 0 12px;
 }
 
 .vHidden {

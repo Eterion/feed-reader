@@ -5,9 +5,11 @@ export function showPrompt(
   {
     defaultValue,
     onOk,
+    title,
   }: {
     defaultValue?: string;
     onOk?: (value: string) => PromiseLike<unknown>;
+    title?: string;
   } = {},
 ) {
   return new Promise<string | void>((resolve) => {
@@ -22,6 +24,7 @@ export function showPrompt(
           h(PromptModal, {
             defaultValue,
             message,
+            title,
             visible: visible.value,
             onOk: async (value) => {
               try {

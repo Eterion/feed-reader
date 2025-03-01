@@ -49,6 +49,7 @@ const folders = computed(() => {
 
 function newFeed(parentId?: number) {
   showPrompt('Feed url', {
+    title: 'New Feed',
     onOk: async (url) => {
       await feedsStore.newFeed(url, parentId);
     },
@@ -57,6 +58,7 @@ function newFeed(parentId?: number) {
 
 function createFolder(parentId?: number) {
   showPrompt('Folder name', {
+    title: 'Create Folder',
     onOk: async (name) => {
       await feedsStore.createFolder(name, parentId);
     },

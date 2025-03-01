@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import AddFeedModal from '@/components/@modals/AddFeedModal.vue';
 import FeedItem from '@/components/FeedItem.vue';
 import LastCheckedOn from '@/components/LastCheckedOn.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import { useFeedsStore } from '@/utils/useFeedsStore';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
@@ -13,15 +14,15 @@ const props = defineProps<{
 const router = useRouter();
 const feedsStore = useFeedsStore();
 
-async function addFeed() {
-  const url = prompt('Feed url');
-  if (url)
-    try {
-      await feedsStore.addFeed(url);
-    } catch (e) {
-      alert(e);
-    }
-}
+const isAddFeedModalVisible = ref(false);
+const addFeed: InstanceType<typeof AddFeedModal>['onSubmit'] = async (url) => {
+  try {
+    await feedsStore.addFeed(url);
+    isAddFeedModalVisible.value = false;
+  } catch (e) {
+    alert(e);
+  }
+};
 
 const mappedFeeds = computed(() => {
   return feedsStore.feeds.map((feed) => {
@@ -90,9 +91,13 @@ const sortedFeeds = computed(() => {
 <template>
   <div>
     <header :class="$style.header">
-      <button type="button" @click="addFeed" :class="$style.addButton">
+      <button
+        :class="$style.addButton"
+        type="button"
+        @click="isAddFeedModalVisible = true">
         Add Feed
       </button>
+      <AddFeedModal v-model:visible="isAddFeedModalVisible" @submit="addFeed" />
       <ThemeToggle />
       <div v-if="feedsStore.lastCheckedOn" :class="$style.lastCheckedOn">
         <LastCheckedOn

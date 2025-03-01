@@ -39,6 +39,11 @@ const folders = computed(() => {
     id: folder.id,
     name: folder.name,
     parentId: folder.parentId,
+    unreadCount: getFolderArticles(folder.id, {
+      articles: feedsStore.articles,
+      feeds: feedsStore.feeds,
+      folders: feedsStore.folders,
+    }).filter((article) => !article.isRead).length,
   }));
 });
 

@@ -9,20 +9,19 @@ import RssIcon from './@icons/RssIcon.vue';
 import TrashIcon from './@icons/TrashIcon.vue';
 import ContextMenu from './ContextMenu.vue';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     depthLevel?: number;
     folder: {
       id: number;
       name: string;
       parentId?: number;
+      unreadCount?: number;
     };
     open?: boolean;
-    unreadCount?: number;
   }>(),
   {
     depthLevel: 0,
-    unreadCount: 0,
   },
 );
 
@@ -40,6 +39,8 @@ const emit = defineEmits<{
 defineOptions({
   inheritAttrs: false,
 });
+
+const unreadCount = computed(() => props.folder.unreadCount ?? 0);
 
 const folderRef = useTemplateRef('folder');
 const isContextMenuOpen = ref(false);
@@ -92,7 +93,13 @@ const contextMenuItems = computed<
 <template>
   <button
     ref="folder"
-    :class="[$style.el, { [$style.open]: isContextMenuOpen }]"
+    :class="[
+      $style.el,
+      {
+        [$style.unread]: unreadCount > 0,
+        [$style.open]: isContextMenuOpen,
+      },
+    ]"
     type="button"
     v-bind="$attrs"
     @click="$emit('toggle', $event)"
@@ -126,7 +133,6 @@ const contextMenuItems = computed<
   border-radius: 6px;
   border: none;
   color: var(--text);
-  column-gap: 0.5ch;
   display: flex;
   font-size: 0.875rem;
   padding: 0 10px;
@@ -142,10 +148,20 @@ const contextMenuItems = computed<
   }
 }
 
+.guide {
+  align-self: stretch;
+  background-color: var(--light-border);
+  flex-shrink: 0;
+  margin-left: 17px;
+  margin-right: 16px;
+  width: 1px;
+}
+
 .folder {
   align-items: center;
   color: var(--light-text);
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
   width: 36px;
   :where(svg) {
@@ -163,13 +179,6 @@ const contextMenuItems = computed<
 
 .count {
   flex-shrink: 0;
-}
-
-.guide {
-  align-self: stretch;
-  background-color: var(--light-border);
-  margin-left: 17px;
-  margin-right: 16px;
-  width: 1px;
+  margin-left: 0.5ch;
 }
 </style>

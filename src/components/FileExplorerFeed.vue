@@ -112,7 +112,6 @@ function onDragstart(event: DragEvent) {
   align-items: center;
   border-radius: 6px;
   color: var(--text);
-  column-gap: 0.5ch;
   display: flex;
   font-size: 0.875rem;
   padding: 0 10px;
@@ -135,6 +134,7 @@ function onDragstart(event: DragEvent) {
 .guide {
   align-self: stretch;
   background-color: var(--border);
+  flex-shrink: 0;
   margin-left: 17px;
   margin-right: 16px;
   width: 1px;
@@ -142,10 +142,11 @@ function onDragstart(event: DragEvent) {
 
 .rss {
   align-items: center;
+  color: var(--rss-color);
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
   width: 36px;
-  color: var(--rss-color);
   :where(svg) {
     height: 18px;
     width: 18px;
@@ -161,5 +162,6 @@ function onDragstart(event: DragEvent) {
 
 .count {
   flex-shrink: 0;
+  margin-left: 0.5ch;
 }
 </style>

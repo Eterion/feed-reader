@@ -39,6 +39,10 @@ declare global {
   const getActivePinia: typeof import('pinia')['getActivePinia']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getFeedArticles: typeof import('./src/utils/getFeedArticles')['getFeedArticles']
+  const getFolderArticles: typeof import('./src/utils/getFolderArticles')['getFolderArticles']
+  const getFolderFeeds: typeof import('./src/utils/getFolderFeeds')['getFolderFeeds']
+  const getFolderFolders: typeof import('./src/utils/getFolderFolders')['getFolderFolders']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const inject: typeof import('vue')['inject']
@@ -365,6 +369,10 @@ declare module 'vue' {
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getFeedArticles: UnwrapRef<typeof import('./src/utils/getFeedArticles')['getFeedArticles']>
+    readonly getFolderArticles: UnwrapRef<typeof import('./src/utils/getFolderArticles')['getFolderArticles']>
+    readonly getFolderFeeds: UnwrapRef<typeof import('./src/utils/getFolderFeeds')['getFolderFeeds']>
+    readonly getFolderFolders: UnwrapRef<typeof import('./src/utils/getFolderFolders')['getFolderFolders']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>

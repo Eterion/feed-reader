@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, nativeImage, shell } from 'electron';
 import { resolve } from 'node:path';
 import { createFolderIpc } from './ipc-channels/createFolderIpc';
 import { markFeedReadIpc } from './ipc-channels/markFeedReadIpc';
@@ -7,12 +7,16 @@ import { moveFeedIpc } from './ipc-channels/moveFeedIpc';
 import { newFeedIpc } from './ipc-channels/newFeedIpc';
 import { refreshIpc } from './ipc-channels/refreshIpc';
 import { removeFeedIpc } from './ipc-channels/removeFeedIpc';
+import { removeFolderIpc } from './ipc-channels/removeFolder';
 import { renameFeedIpc } from './ipc-channels/renameFeedIpc';
 import { handleIpcChannel } from './utils/handleIpcChannel';
+
+const appIcon = nativeImage.createFromPath('src/assets/rss.png');
 
 function createWindow() {
   const win = new BrowserWindow({
     height: 1080,
+    icon: appIcon,
     width: 1920,
     webPreferences: {
       preload: resolve('dist-electron/preload.mjs'),
@@ -38,6 +42,7 @@ handleIpcChannel(moveFeedIpc);
 handleIpcChannel(newFeedIpc);
 handleIpcChannel(refreshIpc);
 handleIpcChannel(removeFeedIpc);
+handleIpcChannel(removeFolderIpc);
 handleIpcChannel(renameFeedIpc);
 
 app.whenReady().then(() => {

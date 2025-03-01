@@ -79,7 +79,8 @@ export const useFeedsStore = defineStore('feeds', () => {
   }
 
   async function removeFolder(folderId: number) {
-    alert('Not yet implemented');
+    await window.ipcRenderer.removeFolder(folderId);
+    remove(folders.value, (folder) => folder.id === folderId);
   }
 
   async function renameFolder(folderId: number, name: string) {

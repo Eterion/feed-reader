@@ -36,7 +36,6 @@ useIntervalFn(() => {
   &_scrollable {
     height: 100%;
     overflow-y: auto;
-    scrollbar-width: thin;
     width: 100%;
   }
 }

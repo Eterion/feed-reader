@@ -66,6 +66,14 @@ const mappedFolders = computed(() => {
         onNewFeed: () => emit('newFeed', folder.id),
         onRemove: () => emit('removeFolder', folder.id),
         onRename: () => emit('renameFolder', folder.id),
+        onDrop: (event) => {
+          const feedId = event.dataTransfer?.getData('feedId');
+          if (feedId)
+            emit('moveFeed', {
+              feedId,
+              parentId: folder.id,
+            });
+        },
         onToggle: () => {
           isOpen
             ? remove(openedIds.value, (value) => value === folder.id)
@@ -116,19 +124,10 @@ const sortedFeeds = computed(() => {
     return a.name.localeCompare(b.name);
   });
 });
-
-function onDrop(event: DragEvent) {
-  const feedId = event.dataTransfer?.getData('feedId');
-  if (feedId)
-    emit('moveFeed', {
-      feedId,
-      parentId: props.folderId,
-    });
-}
 </script>
 
 <template>
-  <ul :class="$style.el" @dragover.prevent @drop="onDrop">
+  <ul :class="$style.el">
     <li v-for="folder in sortedFolders" :key="folder.id">
       <FileExplorerFolder v-bind="folder.folder" />
       <FileExplorer
@@ -142,6 +141,7 @@ function onDrop(event: DragEvent) {
         @mark-feed-unread="$emit('markFeedUnread', $event)"
         @mark-folder-read="$emit('markFolderRead', $event)"
         @mark-folder-unread="$emit('markFolderUnread', $event)"
+        @move-feed="$emit('moveFeed', $event)"
         @move-folder="$emit('moveFolder', $event)"
         @new-feed="$emit('newFeed', $event)"
         @remove-feed="$emit('removeFeed', $event)"

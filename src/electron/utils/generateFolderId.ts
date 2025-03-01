@@ -1,4 +1,4 @@
-import { readDb } from './readOrWriteDb';
+import { readDb } from './readAndWriteDb';
 
 export async function generateFolderId() {
   const db = await readDb();

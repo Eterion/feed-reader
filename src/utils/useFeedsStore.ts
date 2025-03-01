@@ -1,8 +1,6 @@
 import type { Article } from '@/types/Article';
-import type { Database } from '@/types/Database';
 import type { Feed } from '@/types/Feed';
 import type { Folder } from '@/types/Folder';
-import axios from 'axios';
 import { isEqual, remove } from 'es-toolkit';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
@@ -17,7 +15,7 @@ export const useFeedsStore = defineStore('feeds', () => {
   async function refresh() {
     try {
       isLoading.value = true;
-      const { data } = await axios.get<Database>('/refresh');
+      const data = await window.ipcRenderer.refresh();
       articles.value = data.articles;
       feeds.value = data.feeds;
       folders.value = data.folders;
@@ -28,31 +26,31 @@ export const useFeedsStore = defineStore('feeds', () => {
   }
 
   async function newFeed(url: string, parentId?: number) {
-    const { data } = await axios.put<Feed>('/feeds', { url, parentId });
+    const data = await window.ipcRenderer.newFeed({ url, parentId });
     feeds.value.push(data);
     await refresh();
   }
 
   async function removeFeed(feedId: string) {
-    await axios.delete(`/feeds/${feedId}`);
+    await window.ipcRenderer.removeFeed(feedId);
     remove(feeds.value, (feed) => feed.id === feedId);
     remove(articles.value, (article) => article.feedId === feedId);
   }
 
   async function moveFeed(feedId: string, parentId?: number) {
-    await axios.patch('/feeds/move', { feedId, parentId });
+    await window.ipcRenderer.moveFeed({ feedId, parentId });
     const feed = feeds.value.find((feed) => feed.id === feedId);
     if (feed) feed.parentId = parentId;
   }
 
   async function renameFeed(feedId: string, name: string) {
-    await axios.patch(`/feeds/${feedId}`, { name });
+    await window.ipcRenderer.renameFeed({ feedId, name });
     const feed = feeds.value.find((feed) => feed.id === feedId);
     if (feed) feed.name = name;
   }
 
   async function markFeedRead(payload: { feedId: string; link: string }[]) {
-    await axios.post('/mark-read', payload);
+    await window.ipcRenderer.markFeedRead(payload);
     const filteredArticles = articles.value.filter((article) => {
       return payload.some((item) => {
         return isEqual(item, { feedId: article.feedId, link: article.link });
@@ -64,7 +62,7 @@ export const useFeedsStore = defineStore('feeds', () => {
   }
 
   async function markFeedUnread(payload: { feedId: string; link: string }[]) {
-    await axios.post('/mark-unread', payload);
+    await window.ipcRenderer.markFeedUnread(payload);
     const filteredArticles = articles.value.filter((article) => {
       return payload.some((item) => {
         return isEqual(item, { feedId: article.feedId, link: article.link });
@@ -76,7 +74,7 @@ export const useFeedsStore = defineStore('feeds', () => {
   }
 
   async function createFolder(name: string, parentId?: number) {
-    const { data } = await axios.put<Folder>('/folder', { name, parentId });
+    const data = await window.ipcRenderer.createFolder({ name, parentId });
     folders.value.push(data);
   }
 

@@ -1,6 +1,5 @@
 import PromptModal from '@/components/PromptModal.vue';
 import { createApp, h, onMounted, ref } from 'vue';
-import { useCatch } from './useCatch';
 
 export function prompt(
   message: string,
@@ -31,7 +30,7 @@ export function prompt(
                 resolve(value);
                 visible.value = false;
               } catch (e) {
-                useCatch(e).inform();
+                alert(e);
               }
             },
             onCancel: () => {

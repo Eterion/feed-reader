@@ -1,7 +1,7 @@
 import type { Article } from '@/types/Article';
 import { isAfter, parseISO } from 'date-fns';
 import RssParser from 'rss-parser';
-import { readDb, writeDb } from './readOrWriteDb';
+import { readDb, writeDb } from './readAndWriteDb';
 
 export async function downloadFeedArticles(feedIds: string[] = []) {
   const db = await readDb();

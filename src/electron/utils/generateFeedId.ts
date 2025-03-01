@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { readDb } from './readOrWriteDb';
+import { readDb } from './readAndWriteDb';
 
 export async function generateFeedId() {
   const { feeds } = await readDb();

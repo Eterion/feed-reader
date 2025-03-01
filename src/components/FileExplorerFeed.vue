@@ -1,19 +1,29 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
 import type { ComponentProps } from 'vue-component-type-helpers';
+import { useRoute } from 'vue-router';
 import EyeIcon from './@icons/EyeIcon.vue';
 import EyeOffIcon from './@icons/EyeOffIcon.vue';
 import PencilIcon from './@icons/PencilIcon.vue';
+import RssIcon from './@icons/RssIcon.vue';
 import TrashIcon from './@icons/TrashIcon.vue';
 import ContextMenu from './ContextMenu.vue';
 
-const props = defineProps<{
-  active?: boolean;
-  id: string;
-  name?: string;
-  unreadCount: number;
-  url: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    depthLevel?: number;
+    feed: {
+      id: string;
+      name?: string;
+      parentId?: number;
+      unreadCount?: number;
+      url: string;
+    };
+  }>(),
+  {
+    depthLevel: 0,
+  },
+);
 
 const emit = defineEmits<{
   markRead: [];
@@ -22,8 +32,12 @@ const emit = defineEmits<{
   rename: [];
 }>();
 
-const to = computed(() => {
-  return `/${props.id}`;
+const unreadCount = computed(() => props.feed.unreadCount ?? 0);
+const to = computed(() => `/${props.feed.id}`);
+
+const route = useRoute();
+const isActive = computed(() => {
+  return route.params.feedId === props.feed.id;
 });
 
 const link = useTemplateRef('link');
@@ -55,6 +69,10 @@ const contextMenuItems = computed<
     onClick: () => emit('remove'),
   },
 ]);
+
+function onDragstart(event: DragEvent) {
+  event.dataTransfer?.setData('feedId', props.feed.id);
+}
 </script>
 
 <template>
@@ -65,13 +83,17 @@ const contextMenuItems = computed<
       :class="[
         $style.link,
         {
-          [$style.active]: active,
+          [$style.active]: isActive,
           [$style.unread]: unreadCount > 0,
           [$style.open]: isContextMenuOpen,
         },
       ]"
-      @click="navigate">
-      <span :class="$style.name">{{ name || url }}</span>
+      draggable
+      @click="navigate"
+      @dragstart="onDragstart">
+      <span v-for="n in depthLevel" :key="n" :class="$style.guide"></span>
+      <span :class="$style.rss"><RssIcon /></span>
+      <span :class="$style.name">{{ feed.name || feed.url }}</span>
       <span :class="$style.count" v-if="unreadCount">({{ unreadCount }})</span>
     </a>
     <ContextMenu
@@ -88,18 +110,21 @@ const contextMenuItems = computed<
 
 <style module lang="scss">
 .link {
+  --rss-color: var(--light-text);
   align-items: center;
   border-radius: 6px;
   color: var(--text);
   column-gap: 0.5ch;
   display: flex;
   font-size: 0.875rem;
-  padding: 6px 10px;
+  padding: 0 10px;
   text-decoration: none;
   &.unread {
+    --rss-color: var(--rss);
     font-weight: bold;
   }
   &.active {
+    --rss-color: currenColor;
     color: var(--text-on-primary-surface);
     background-color: var(--primary-surface);
   }
@@ -109,10 +134,31 @@ const contextMenuItems = computed<
   }
 }
 
+.guide {
+  align-self: stretch;
+  background-color: var(--border);
+  margin-left: 17px;
+  margin-right: 16px;
+  width: 1px;
+}
+
+.rss {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 36px;
+  color: var(--rss-color);
+  :where(svg) {
+    height: 18px;
+    width: 18px;
+  }
+}
+
 .name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding: 6px 0;
 }
 
 .count {

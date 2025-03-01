@@ -4,10 +4,10 @@ import { minutesToMilliseconds } from 'date-fns';
 import { useFeedsStore } from './utils/useFeedsStore';
 
 const feedsStore = useFeedsStore();
-feedsStore.refreshFeeds();
+feedsStore.refresh();
 
 useIntervalFn(() => {
-  feedsStore.refreshFeeds();
+  feedsStore.refresh();
 }, minutesToMilliseconds(10));
 </script>
 

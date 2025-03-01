@@ -5,5 +5,6 @@ export interface Feed {
   data: Except<RssParser.Output<UnknownRecord>, 'items'>;
   id: string;
   name?: string;
+  parentId?: number;
   url: string;
 }

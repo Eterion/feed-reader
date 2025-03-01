@@ -1,127 +1,188 @@
 <script setup lang="ts">
-import AddFeedModal from '@/components/@modals/AddFeedModal.vue';
-import FeedItem from '@/components/FeedItem.vue';
+import FolderIcon from '@/components/@icons/FolderIcon.vue';
+import RssIcon from '@/components/@icons/RssIcon.vue';
+import ContextMenu from '@/components/ContextMenu.vue';
+import FileExplorer from '@/components/FileExplorer.vue';
 import LastCheckedOn from '@/components/LastCheckedOn.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
+import { prompt } from '@/utils/prompt';
 import { useFeedsStore } from '@/utils/useFeedsStore';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import type { IterableElement } from 'type-fest';
+import { computed, useTemplateRef } from 'vue';
+import type { ComponentProps } from 'vue-component-type-helpers';
 
-const props = defineProps<{
-  feedId?: string;
-}>();
-
-const router = useRouter();
 const feedsStore = useFeedsStore();
 
-const isAddFeedModalVisible = ref(false);
-const addFeed: InstanceType<typeof AddFeedModal>['onSubmit'] = async (url) => {
-  try {
-    await feedsStore.addFeed(url);
-    isAddFeedModalVisible.value = false;
-  } catch (e) {
-    alert(e);
-  }
-};
+const getFeedArticles = computed(() => {
+  return (feedId: string) => {
+    const articles = feedsStore.articles;
+    const feedArticles = articles.filter((item) => item.feedId === feedId);
+    const unread = feedArticles.filter((item) => !item.isRead);
+    const read = feedArticles.filter((item) => item.isRead);
+    return { unread, read };
+  };
+});
 
-const mappedFeeds = computed(() => {
-  return feedsStore.feeds.map((feed) => {
-    const feedArticles = feedsStore.articles.filter(
-      (article) => article.feedId === feed.id,
-    );
-    const unreadArticles = feedArticles.filter((article) => {
-      return !article.isRead;
-    });
-    const readArticles = feedArticles.filter((article) => {
-      return article.isRead;
-    });
-    return {
-      ...feed,
-      isActive: feed.id === props.feedId,
-      unreadCount: unreadArticles.length,
-      rename: async () => {
-        const name = prompt('New name');
-        if (name)
+const feeds = computed(() => {
+  return feedsStore.feeds.map<
+    IterableElement<ComponentProps<typeof FileExplorer>['feeds']>
+  >((feed) => ({
+    id: feed.id,
+    name: feed.name,
+    parentId: feed.parentId,
+    url: feed.url,
+    unreadCount: getFeedArticles.value(feed.id).unread.length,
+  }));
+});
+
+const folders = computed(() => {
+  return feedsStore.folders.map<
+    IterableElement<ComponentProps<typeof FileExplorer>['folders']>
+  >((folder) => ({
+    id: folder.id,
+    name: folder.name,
+    parentId: folder.parentId,
+  }));
+});
+
+function newFeed(parentId?: number) {
+  prompt('Feed url', {
+    onOk: async (url) => {
+      await feedsStore.newFeed(url, parentId);
+    },
+  });
+}
+
+function createFolder(parentId?: number) {
+  prompt('Folder name', {
+    onOk: async (name) => {
+      await feedsStore.createFolder(name, parentId);
+    },
+  });
+}
+
+const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
+  return {
+    feeds: feeds.value,
+    folders: folders.value,
+    onCreateFolder: createFolder,
+    onNewFeed: newFeed,
+    onMarkFeedRead: async (feedId) => {
+      const { unread } = getFeedArticles.value(feedId);
+      if (unread.length)
+        await feedsStore.markFeedRead(
+          unread.map((article) => ({
+            feedId: article.feedId,
+            link: article.link,
+          })),
+        );
+    },
+    onMarkFolderRead: async (folderId) => {
+      await feedsStore.markFolderRead(folderId);
+    },
+    onMarkFeedUnread: async (feedId) => {
+      const { read } = getFeedArticles.value(feedId);
+      if (read.length)
+        await feedsStore.markFeedUnread(
+          read.map((article) => ({
+            feedId: article.feedId,
+            link: article.link,
+          })),
+        );
+    },
+    onMarkFolderUnread: async (folderId) => {
+      await feedsStore.markFolderUnread(folderId);
+    },
+    onMoveFeed: async ({ feedId, parentId }) => {
+      await feedsStore.moveFeed(feedId, parentId);
+    },
+    onMoveFolder: async ({ folderId, parentId }) => {
+      await feedsStore.moveFolder(folderId, parentId);
+    },
+    onRemoveFeed: async (feedId) => {
+      if (confirm('Really remove?'))
+        try {
+          await feedsStore.removeFeed(feedId);
+        } catch (e) {
+          alert(e);
+        }
+    },
+    onRemoveFolder: async (folderId) => {
+      if (confirm('Really remove?'))
+        try {
+          await feedsStore.removeFolder(folderId);
+        } catch (e) {
+          alert(e);
+        }
+    },
+    onRenameFeed: async (feedId) => {
+      prompt('New name', {
+        defaultValue: feeds.value.find((feed) => {
+          return feed.id === feedId;
+        })?.name,
+        onOk: async (name) => {
           try {
-            await feedsStore.renameFeed(feed.id, name);
+            await feedsStore.renameFeed(feedId, name);
           } catch (e) {
             alert(e);
           }
-      },
-      remove: async () => {
-        if (confirm('Really remove?'))
+        },
+      });
+    },
+    onRenameFolder: async (folderId) => {
+      prompt('New name', {
+        defaultValue: folders.value.find((folder) => folder.id === folderId)
+          ?.name,
+        onOk: async (name) => {
           try {
-            await feedsStore.removeFeed(feed.id);
-            router.push('/');
+            await feedsStore.renameFolder(folderId, name);
           } catch (e) {
             alert(e);
           }
-      },
-      markRead: async () => {
-        if (unreadArticles.length)
-          await feedsStore.markRead(
-            unreadArticles.map((article) => ({
-              feedId: article.feedId,
-              link: article.link,
-            })),
-          );
-      },
-      markUnread: async () => {
-        if (readArticles.length)
-          await feedsStore.markUnread(
-            readArticles.map((article) => ({
-              feedId: article.feedId,
-              link: article.link,
-            })),
-          );
-      },
-    };
-  });
+        },
+      });
+    },
+  };
 });
 
-const sortedFeeds = computed(() => {
-  return mappedFeeds.value.sort((a, b) => {
-    const aName = a.name || a.url;
-    const bName = b.name || b.url;
-    return aName.localeCompare(bName);
-  });
-});
+const rootRef = useTemplateRef('root');
+const contextMenuItems = computed<
+  ComponentProps<typeof ContextMenu<'newFeed' | 'createFolder'>>['items']
+>(() => [
+  {
+    caption: 'New Feed',
+    iconSlot: 'newFeed',
+    onClick: () => newFeed(),
+  },
+  {
+    caption: 'Create Folder',
+    iconSlot: 'createFolder',
+    onClick: () => createFolder(),
+  },
+]);
 </script>
 
 <template>
-  <div>
+  <div ref="root">
     <header :class="$style.header">
-      <button
-        :class="$style.addButton"
-        type="button"
-        @click="isAddFeedModalVisible = true">
+      <button :class="$style.addButton" type="button" @click="newFeed()">
         Add Feed
       </button>
-      <AddFeedModal v-model:visible="isAddFeedModalVisible" @submit="addFeed" />
       <ThemeToggle />
       <div v-if="feedsStore.lastCheckedOn" :class="$style.lastCheckedOn">
         <LastCheckedOn
           :date="feedsStore.lastCheckedOn"
           :loading="feedsStore.isLoading"
-          @click="feedsStore.refreshFeeds" />
+          @click="feedsStore.refresh" />
       </div>
     </header>
     <div :class="$style.content">
-      <ul :class="$style.list">
-        <li v-for="feed in sortedFeeds" :key="feed.id">
-          <FeedItem
-            :active="feed.isActive"
-            :id="feed.id"
-            :name="feed.name"
-            :unread-count="feed.unreadCount"
-            :url="feed.url"
-            @mark-read="feed.markRead"
-            @mark-unread="feed.markUnread"
-            @remove="feed.remove"
-            @rename="feed.rename" />
-        </li>
-      </ul>
+      <FileExplorer v-bind="fileExplorerProps" />
     </div>
+    <ContextMenu :reference-element="rootRef" :items="contextMenuItems">
+      <template #newFeed><RssIcon /></template>
+      <template #createFolder><FolderIcon /></template>
+    </ContextMenu>
   </div>
 </template>
 
@@ -162,13 +223,5 @@ const sortedFeeds = computed(() => {
 
 .content {
   padding: 0 12px 64px;
-}
-
-.list {
-  list-style: none;
-  padding: 0;
-  &:where(li):not(:last-child) {
-    margin-bottom: 1px;
-  }
 }
 </style>

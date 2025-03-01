@@ -1,14 +1,8 @@
-import type { Article } from '@/types/Article';
-import type { Feed } from '@/types/Feed';
+import type { Database } from '@/types/Database';
 import { access, constants, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const DB_FILE = join(process.cwd(), 'db.json');
-
-interface Database {
-  articles: Article[];
-  feeds: Feed[];
-}
 
 async function ensureDbFile() {
   try {
@@ -24,6 +18,12 @@ export async function readDb(): Promise<Database> {
   return JSON.parse(db);
 }
 
-export async function writeDb(db: Database = { articles: [], feeds: [] }) {
+export async function writeDb(
+  db: Database = {
+    articles: [],
+    feeds: [],
+    folders: [],
+  },
+) {
   await writeFile(DB_FILE, JSON.stringify(db), 'utf8');
 }

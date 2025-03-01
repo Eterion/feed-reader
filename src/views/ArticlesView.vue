@@ -36,13 +36,13 @@ const mappedArticles = computed(() => {
     isoDate: article.data.isoDate ? parseISO(article.data.isoDate) : now,
     markRead: async () => {
       if (props.feedId)
-        await feedsStore.markRead([
+        await feedsStore.markFeedRead([
           { feedId: props.feedId, link: article.link },
         ]);
     },
     markUnread: async () => {
       if (props.feedId)
-        await feedsStore.markUnread([
+        await feedsStore.markFeedUnread([
           { feedId: props.feedId, link: article.link },
         ]);
     },

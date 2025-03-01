@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import XIcon from './@icons/XIcon.vue';
 
 const props = withDefaults(
   defineProps<{
-    title: string;
+    title?: string;
     width?: number;
   }>(),
   {
@@ -12,8 +11,16 @@ const props = withDefaults(
   },
 );
 
+defineEmits<{
+  hidden: [];
+  hide: [];
+  show: [];
+  shown: [];
+}>();
+
 const visible = defineModel<boolean>('visible');
 const widthStyle = computed(() => ({ width: props.width + 'px' }));
+const hide = () => (visible.value = false);
 </script>
 
 <template>
@@ -22,15 +29,16 @@ const widthStyle = computed(() => ({ width: props.width + 'px' }));
       :enter-from-class="$style.vHidden"
       :leave-to-class="$style.vHidden"
       :enter-active-class="$style.vActive"
-      :leave-active-class="$style.vActive">
+      :leave-active-class="$style.vActive"
+      @before-enter="$emit('show')"
+      @after-enter="$emit('shown')"
+      @before-leave="$emit('hide')"
+      @after-leave="$emit('hidden')">
       <div v-if="visible" :class="$style.el">
         <div :class="$style.backdrop" />
         <div :class="$style.modal" :style="widthStyle">
-          <h2 :class="$style.title">{{ title }}</h2>
-          <slot />
-          <button :class="$style.close" type="button" @click="visible = false">
-            <XIcon />
-          </button>
+          <h2 v-if="title" :class="$style.title">{{ title }}</h2>
+          <slot :hide="hide" />
         </div>
       </div>
     </Transition>
@@ -77,24 +85,6 @@ const widthStyle = computed(() => ({ width: props.width + 'px' }));
   padding: 0 0 12px;
 }
 
-.close {
-  align-items: center;
-  background-color: transparent;
-  border: none;
-  color: var(--light-text);
-  cursor: pointer;
-  display: flex;
-  height: 60px;
-  justify-content: center;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 60px;
-  &:hover {
-    color: var(--text);
-  }
-}
-
 .vHidden {
   .backdrop {
     opacity: 0;
@@ -106,7 +96,7 @@ const widthStyle = computed(() => ({ width: props.width + 'px' }));
 }
 
 .vActive {
-  $-speed: 200ms;
+  $-speed: 150ms;
   transition-duration: $-speed;
   .backdrop {
     transition-duration: $-speed;

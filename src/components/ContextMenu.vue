@@ -101,6 +101,7 @@ useEventListener(
     };
     isOpen.value = true;
   },
+  { capture: true },
 );
 
 onClickOutside(floating, () => {

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useNow } from '@vueuse/core';
 import { formatDistance } from 'date-fns';
-import { computed } from 'vue';
 import RefreshIcon from './@icons/RefreshIcon.vue';
 
 const props = defineProps<{

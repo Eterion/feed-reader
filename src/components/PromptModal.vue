@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import BaseModal from './BaseModal.vue';
 
 const props = defineProps<{

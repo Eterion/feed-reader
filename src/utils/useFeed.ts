@@ -1,6 +1,3 @@
-import { computed, toValue, type MaybeRefOrGetter } from 'vue';
-import { useFeedsStore } from './useFeedsStore';
-
 export function useFeed(feedId: MaybeRefOrGetter<string | undefined>) {
   const feedsStore = useFeedsStore();
 

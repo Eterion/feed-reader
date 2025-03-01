@@ -12,24 +12,8 @@ import {
   useFloating,
   type VirtualElement,
 } from '@floating-ui/vue';
-import {
-  onClickOutside,
-  useEventListener,
-  useMouse,
-  watchImmediate,
-  whenever,
-} from '@vueuse/core';
 import { cloneDeep, remove } from 'es-toolkit';
-import { defineStore } from 'pinia';
 import type { Promisable } from 'type-fest';
-import {
-  computed,
-  onBeforeUnmount,
-  reactive,
-  ref,
-  useId,
-  useTemplateRef,
-} from 'vue';
 
 const props = defineProps<{
   referenceElement: HTMLElement | null;

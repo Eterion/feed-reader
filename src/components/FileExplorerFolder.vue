@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, ref, useTemplateRef } from 'vue';
 import type { ComponentProps } from 'vue-component-type-helpers';
 import EyeIcon from './@icons/EyeIcon.vue';
 import EyeOffIcon from './@icons/EyeOffIcon.vue';

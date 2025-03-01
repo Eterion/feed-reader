@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { useFeed } from '@/utils/useFeed';
-import { useFeedsStore } from '@/utils/useFeedsStore';
-import { watchImmediate } from '@vueuse/core';
 import { parseISO } from 'date-fns';
 import sanitize from 'sanitize-html';
-import { computed } from 'vue';
 
 const props = defineProps<{
   feedId?: string;

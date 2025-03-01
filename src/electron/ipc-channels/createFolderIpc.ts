@@ -1,4 +1,3 @@
-import type { Folder } from '@/types/Folder';
 import { isNotNil } from 'es-toolkit';
 import type { IpcChannel } from '../types/IpcChannel';
 import { IpcName } from '../types/IpcName';

@@ -5,10 +5,7 @@ import ContextMenu from '@/components/ContextMenu.vue';
 import FileExplorer from '@/components/FileExplorer.vue';
 import LastCheckedOn from '@/components/LastCheckedOn.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
-import { prompt } from '@/utils/prompt';
-import { useFeedsStore } from '@/utils/useFeedsStore';
 import type { IterableElement } from 'type-fest';
-import { computed, useTemplateRef } from 'vue';
 import type { ComponentProps } from 'vue-component-type-helpers';
 
 const feedsStore = useFeedsStore();
@@ -46,7 +43,7 @@ const folders = computed(() => {
 });
 
 function newFeed(parentId?: number) {
-  prompt('Feed url', {
+  showPrompt('Feed url', {
     onOk: async (url) => {
       await feedsStore.newFeed(url, parentId);
     },
@@ -54,7 +51,7 @@ function newFeed(parentId?: number) {
 }
 
 function createFolder(parentId?: number) {
-  prompt('Folder name', {
+  showPrompt('Folder name', {
     onOk: async (name) => {
       await feedsStore.createFolder(name, parentId);
     },
@@ -116,7 +113,7 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
         }
     },
     onRenameFeed: async (feedId) => {
-      prompt('New name', {
+      showPrompt('New name', {
         defaultValue: feeds.value.find((feed) => {
           return feed.id === feedId;
         })?.name,
@@ -130,7 +127,7 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
       });
     },
     onRenameFolder: async (folderId) => {
-      prompt('New name', {
+      showPrompt('New name', {
         defaultValue: folders.value.find((folder) => folder.id === folderId)
           ?.name,
         onOk: async (name) => {

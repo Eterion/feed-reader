@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import ArticleItem from '@/components/ArticleItem.vue';
-import { useFeed } from '@/utils/useFeed';
-import { useFeedsStore } from '@/utils/useFeedsStore';
 import {
   endOfDay,
   isAfter,
@@ -11,7 +9,6 @@ import {
   parseISO,
   sub,
 } from 'date-fns';
-import { computed } from 'vue';
 
 const props = defineProps<{
   feedId?: string;

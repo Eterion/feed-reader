@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core';
 import { remove } from 'es-toolkit';
 import { isNumber } from 'es-toolkit/compat';
-import { computed } from 'vue';
 import type { ComponentProps } from 'vue-component-type-helpers';
 import FileExplorerFeed from './FileExplorerFeed.vue';
 import FileExplorerFolder from './FileExplorerFolder.vue';

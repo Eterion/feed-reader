@@ -1,7 +1,6 @@
 import PromptModal from '@/components/PromptModal.vue';
-import { createApp, h, onMounted, ref } from 'vue';
 
-export function prompt(
+export function showPrompt(
   message: string,
   {
     defaultValue,

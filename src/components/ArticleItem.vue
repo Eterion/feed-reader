@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, ref, useTemplateRef } from 'vue';
 import type { ComponentProps } from 'vue-component-type-helpers';
 import type { RouteLocationRaw } from 'vue-router';
 import EyeIcon from './@icons/EyeIcon.vue';

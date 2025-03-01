@@ -1,4 +1,3 @@
-import type { Database } from '@/types/Database';
 import { access, constants, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 

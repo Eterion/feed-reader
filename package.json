@@ -32,6 +32,7 @@
     "tsx": "^4.19.3",
     "type-fest": "^4.35.0",
     "typescript": "^5.7.3",
+    "unplugin-auto-import": "^19.1.1",
     "vite": "^6.1.1",
     "vite-plugin-electron": "^0.29.0",
     "vue-component-type-helpers": "^2.2.4",

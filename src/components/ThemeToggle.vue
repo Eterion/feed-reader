@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useDark } from '@vueuse/core';
 import MoonIcon from './@icons/MoonIcon.vue';
 import SunIcon from './@icons/SunIcon.vue';
 

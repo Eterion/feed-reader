@@ -1,9 +1,4 @@
-import type { Article } from '@/types/Article';
-import type { Feed } from '@/types/Feed';
-import type { Folder } from '@/types/Folder';
 import { isEqual, remove } from 'es-toolkit';
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 export const useFeedsStore = defineStore('feeds', () => {
   const articles = ref<Article[]>([]);

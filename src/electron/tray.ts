@@ -1,8 +1,8 @@
-import { Menu, MenuItem, nativeImage, Tray } from 'electron';
+import { app, Menu, MenuItem, nativeImage, Tray } from 'electron';
 import { win } from './win';
 
 export let tray: Tray | undefined;
-const appName = 'Feed Reader';
+const appName = app.getName();
 const defaultIcon = nativeImage.createFromPath('src/assets/rss.png');
 const unreadIcon = nativeImage.createFromPath('src/assets/rss-unread.png');
 

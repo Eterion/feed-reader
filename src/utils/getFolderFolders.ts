@@ -1,3 +1,5 @@
+import type { Folder } from '@/types/Folder';
+
 export function getFolderFolders(
   folderId: number,
   {

@@ -1,3 +1,5 @@
+import type { Article } from '@/types/Article';
+
 export function getFeedArticles(
   feedId: string,
   {

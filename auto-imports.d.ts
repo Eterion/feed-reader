@@ -39,10 +39,6 @@ declare global {
   const getActivePinia: typeof import('pinia')['getActivePinia']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
-  const getFeedArticles: typeof import('./src/utils/getFeedArticles')['getFeedArticles']
-  const getFolderArticles: typeof import('./src/utils/getFolderArticles')['getFolderArticles']
-  const getFolderFeeds: typeof import('./src/utils/getFolderFeeds')['getFolderFeeds']
-  const getFolderFolders: typeof import('./src/utils/getFolderFolders')['getFolderFolders']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const inject: typeof import('vue')['inject']
@@ -105,7 +101,6 @@ declare global {
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
-  const showPrompt: typeof import('./src/utils/showPrompt')['showPrompt']
   const storeToRefs: typeof import('pinia')['storeToRefs']
   const syncRef: typeof import('@vueuse/core')['syncRef']
   const syncRefs: typeof import('@vueuse/core')['syncRefs']
@@ -185,8 +180,6 @@ declare global {
   const useEventSource: typeof import('@vueuse/core')['useEventSource']
   const useEyeDropper: typeof import('@vueuse/core')['useEyeDropper']
   const useFavicon: typeof import('@vueuse/core')['useFavicon']
-  const useFeed: typeof import('./src/utils/useFeed')['useFeed']
-  const useFeedsStore: typeof import('./src/utils/useFeedsStore')['useFeedsStore']
   const useFetch: typeof import('@vueuse/core')['useFetch']
   const useFileDialog: typeof import('@vueuse/core')['useFileDialog']
   const useFileSystemAccess: typeof import('@vueuse/core')['useFileSystemAccess']
@@ -317,18 +310,6 @@ declare global {
   // @ts-ignore
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
-  // @ts-ignore
-  export type { Article } from './src/types/Article'
-  import('./src/types/Article')
-  // @ts-ignore
-  export type { Database } from './src/types/Database'
-  import('./src/types/Database')
-  // @ts-ignore
-  export type { Feed } from './src/types/Feed'
-  import('./src/types/Feed')
-  // @ts-ignore
-  export type { Folder } from './src/types/Folder'
-  import('./src/types/Folder')
 }
 
 // for vue template auto import
@@ -369,10 +350,6 @@ declare module 'vue' {
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
-    readonly getFeedArticles: UnwrapRef<typeof import('./src/utils/getFeedArticles')['getFeedArticles']>
-    readonly getFolderArticles: UnwrapRef<typeof import('./src/utils/getFolderArticles')['getFolderArticles']>
-    readonly getFolderFeeds: UnwrapRef<typeof import('./src/utils/getFolderFeeds')['getFolderFeeds']>
-    readonly getFolderFolders: UnwrapRef<typeof import('./src/utils/getFolderFolders')['getFolderFolders']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
@@ -435,7 +412,6 @@ declare module 'vue' {
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
-    readonly showPrompt: UnwrapRef<typeof import('./src/utils/showPrompt')['showPrompt']>
     readonly storeToRefs: UnwrapRef<typeof import('pinia')['storeToRefs']>
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>
@@ -515,8 +491,6 @@ declare module 'vue' {
     readonly useEventSource: UnwrapRef<typeof import('@vueuse/core')['useEventSource']>
     readonly useEyeDropper: UnwrapRef<typeof import('@vueuse/core')['useEyeDropper']>
     readonly useFavicon: UnwrapRef<typeof import('@vueuse/core')['useFavicon']>
-    readonly useFeed: UnwrapRef<typeof import('./src/utils/useFeed')['useFeed']>
-    readonly useFeedsStore: UnwrapRef<typeof import('./src/utils/useFeedsStore')['useFeedsStore']>
     readonly useFetch: UnwrapRef<typeof import('@vueuse/core')['useFetch']>
     readonly useFileDialog: UnwrapRef<typeof import('@vueuse/core')['useFileDialog']>
     readonly useFileSystemAccess: UnwrapRef<typeof import('@vueuse/core')['useFileSystemAccess']>

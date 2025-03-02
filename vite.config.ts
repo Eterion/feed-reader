@@ -11,7 +11,6 @@ export default defineConfig({
   plugins: [
     vue(),
     autoImport({
-      dirs: ['./src/types/**', './src/utils/**'],
       imports: ['@vueuse/core', 'pinia', 'vue', 'vue-router'],
       include: [/\.ts$/, /\.vue$/],
       injectAtEnd: true,

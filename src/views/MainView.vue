@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFeed } from '@/utils/useFeed';
+import { useFeedsStore } from '@/utils/useFeedsStore';
 import { parseISO } from 'date-fns';
 import sanitize from 'sanitize-html';
 

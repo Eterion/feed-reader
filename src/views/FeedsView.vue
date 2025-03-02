@@ -5,6 +5,9 @@ import ContextMenu from '@/components/ContextMenu.vue';
 import FileExplorer from '@/components/FileExplorer.vue';
 import LastCheckedOn from '@/components/LastCheckedOn.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
+import { getFolderArticles } from '@/utils/getFolderArticles';
+import { showPrompt } from '@/utils/showPrompt';
+import { useFeedsStore } from '@/utils/useFeedsStore';
 import type { IterableElement } from 'type-fest';
 import type { ComponentProps } from 'vue-component-type-helpers';
 

@@ -1,3 +1,5 @@
+import { useFeedsStore } from './useFeedsStore';
+
 export function useFeed(feedId: MaybeRefOrGetter<string | undefined>) {
   const feedsStore = useFeedsStore();
 

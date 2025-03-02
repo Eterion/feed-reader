@@ -1,3 +1,4 @@
+import type { Feed } from '@/types/Feed';
 import { isNotNil, omit } from 'es-toolkit';
 import RssParser from 'rss-parser';
 import type { IpcChannel } from '../types/IpcChannel';

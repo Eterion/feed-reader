@@ -1,3 +1,6 @@
+import type { Article } from '@/types/Article';
+import type { Feed } from '@/types/Feed';
+import type { Folder } from '@/types/Folder';
 import { isEqual, remove } from 'es-toolkit';
 
 export const useFeedsStore = defineStore('feeds', () => {

@@ -1,3 +1,4 @@
+import type { Article } from '@/types/Article';
 import { isAfter, parseISO } from 'date-fns';
 import RssParser from 'rss-parser';
 import { readDb, writeDb } from './readAndWriteDb';

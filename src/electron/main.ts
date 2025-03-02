@@ -1,5 +1,4 @@
-import { app, BrowserWindow, nativeImage, shell } from 'electron';
-import { resolve } from 'node:path';
+import { app, BrowserWindow } from 'electron';
 import { createFolderIpc } from './ipc-channels/createFolderIpc';
 import { markFeedReadIpc } from './ipc-channels/markFeedReadIpc';
 import { markFeedUnreadIpc } from './ipc-channels/markFeedUnreadIpc';
@@ -10,30 +9,7 @@ import { removeFeedIpc } from './ipc-channels/removeFeedIpc';
 import { removeFolderIpc } from './ipc-channels/removeFolder';
 import { renameFeedIpc } from './ipc-channels/renameFeedIpc';
 import { handleIpcChannel } from './utils/handleIpcChannel';
-
-const appIcon = nativeImage.createFromPath('src/assets/rss.png');
-
-function createWindow() {
-  const win = new BrowserWindow({
-    height: 1080,
-    icon: appIcon,
-    width: 1920,
-    webPreferences: {
-      preload: resolve('dist-electron/preload.mjs'),
-    },
-  });
-
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
-    return { action: 'deny' };
-  });
-
-  if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(process.env.VITE_DEV_SERVER_URL);
-  } else {
-    win.loadFile('dist/index.html');
-  }
-}
+import { createWindow } from './win';
 
 handleIpcChannel(createFolderIpc);
 handleIpcChannel(markFeedReadIpc);
@@ -47,6 +23,7 @@ handleIpcChannel(renameFeedIpc);
 
 app.whenReady().then(() => {
   createWindow();
+  // createTray({ onExit: () => app.quit() });
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();

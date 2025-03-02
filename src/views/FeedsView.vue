@@ -107,7 +107,9 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
       await feedsStore.moveFolder(folderId, parentId);
     },
     onRemoveFeed: (feedId) => {
-      showConfirm('Remove feed?', {
+      const feedName = feeds.value.find((feed) => feed.id === feedId)?.name;
+      showConfirm(`Are you sure you want to remove **${feedName}** feed?`, {
+        title: 'Remove Feed',
         danger: true,
         onOk: async () => {
           await feedsStore.removeFeed(feedId);
@@ -115,27 +117,36 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
       });
     },
     onRemoveFolder: async (folderId) => {
-      showConfirm('Remove folder?', {
-        danger: true,
-        onOk: async () => {
-          await feedsStore.removeFolder(folderId);
+      const folderName = folders.value.find(
+        (folder) => folder.id === folderId,
+      )?.name;
+      showConfirm(
+        `Are you sure you want to remove **${folderName}** folder? Feeds in this folder will also be removed.`,
+        {
+          danger: true,
+          title: 'Remove Folder',
+          onOk: async () => {
+            await feedsStore.removeFolder(folderId);
+          },
         },
-      });
+      );
     },
     onRenameFeed: async (feedId) => {
-      showPrompt('New name', {
+      showPrompt('Enter new feed name', {
         defaultValue: feeds.value.find((feed) => {
           return feed.id === feedId;
         })?.name,
+        title: 'Rename Feed',
         onOk: async (name) => {
           await feedsStore.renameFeed(feedId, name);
         },
       });
     },
     onRenameFolder: async (folderId) => {
-      showPrompt('New name', {
+      showPrompt('Enter new folder name', {
         defaultValue: folders.value.find((folder) => folder.id === folderId)
           ?.name,
+        title: 'Rename Folder',
         onOk: async (name) => {
           await feedsStore.renameFolder(folderId, name);
         },

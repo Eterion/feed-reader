@@ -3,6 +3,7 @@ import type { Promisable } from 'type-fest';
 import BaseButton from './BaseButton.vue';
 import BaseModal from './BaseModal.vue';
 import ButtonGroup from './ButtonGroup.vue';
+import MarkdownText from './MarkdownText.vue';
 
 const props = defineProps<{
   danger?: boolean;
@@ -53,9 +54,7 @@ useEventListener(
     @hide="$emit('hide')"
     @show="$emit('show')"
     @shown="$emit('shown')">
-    <div :class="$style.main">
-      <p>{{ message }}</p>
-    </div>
+    <MarkdownText :class="$style.main" :markdown="message" />
     <ButtonGroup>
       <BaseButton
         :loading="isLoading"

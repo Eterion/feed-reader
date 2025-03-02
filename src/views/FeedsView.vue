@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import FolderIcon from '@/components/@icons/FolderIcon.vue';
 import RssIcon from '@/components/@icons/RssIcon.vue';
+import AppHeader from '@/components/AppHeader.vue';
 import ContextMenu from '@/components/ContextMenu.vue';
 import FileExplorer from '@/components/FileExplorer.vue';
-import LastCheckedOn from '@/components/LastCheckedOn.vue';
-import ThemeToggle from '@/components/ThemeToggle.vue';
 import { getFolderArticles } from '@/utils/getFolderArticles';
 import { showConfirm } from '@/utils/showConfirm';
 import { showPrompt } from '@/utils/showPrompt';
@@ -52,7 +51,7 @@ const folders = computed(() => {
 });
 
 function newFeed(parentId?: number) {
-  showPrompt('Feed url', {
+  showPrompt('Enter the rss/atom url', {
     title: 'New Feed',
     onOk: async (url) => {
       await feedsStore.newFeed(url, parentId);
@@ -164,18 +163,12 @@ const contextMenuItems = computed<
 
 <template>
   <div ref="root">
-    <header :class="$style.header">
-      <button :class="$style.addButton" type="button" @click="newFeed()">
-        Add Feed
-      </button>
-      <ThemeToggle />
-      <div v-if="feedsStore.lastCheckedOn" :class="$style.lastCheckedOn">
-        <LastCheckedOn
-          :date="feedsStore.lastCheckedOn"
-          :loading="feedsStore.isLoading"
-          @click="feedsStore.refresh" />
-      </div>
-    </header>
+    <AppHeader
+      :class="$style.header"
+      :last-checked-on="feedsStore.lastCheckedOn"
+      :loading="feedsStore.isLoading"
+      @new-feed="newFeed"
+      @refresh="feedsStore.refresh" />
     <div :class="$style.content">
       <FileExplorer v-bind="fileExplorerProps" />
     </div>
@@ -188,40 +181,11 @@ const contextMenuItems = computed<
 
 <style module lang="scss">
 .header {
-  align-items: center;
-  background-color: var(--foreground);
-  column-gap: 0.5ch;
-  display: flex;
-  padding: 12px;
   position: sticky;
   top: 0;
 }
 
-.addButton {
-  background-color: var(--foreground);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  box-shadow: var(--low-shadow);
-  color: var(--text);
-  cursor: pointer;
-  flex-shrink: 0;
-  font-size: 0.875rem;
-  padding: 6px 10px;
-  transition-duration: 200ms;
-  transition-property: background-color, border-color;
-  &:hover {
-    background-color: var(--hover-surface);
-    border-color: var(--dark-border);
-  }
-}
-
-.lastCheckedOn {
-  display: flex;
-  flex-grow: 1;
-  justify-content: flex-end;
-}
-
 .content {
-  padding: 0 12px 64px;
+  padding: 12px 12px 64px;
 }
 </style>

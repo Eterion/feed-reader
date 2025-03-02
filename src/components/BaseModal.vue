@@ -76,9 +76,9 @@ const hide = () => (visible.value = false);
 
 .title {
   color: var(--light-text);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: normal;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .vHidden {

@@ -15,6 +15,10 @@
   --foreground: #fff;
   --gray-surface: #e9ecef;
   --hover-surface: #dee2e6;
+  --input-border: #adb5bd;
+  --input-dark-border: #495057;
+  --input-light-border: #dee2e6;
+  --input-surface: var(--foreground);
   --light-border: #f1f3f5;
   --light-text: #868e96;
   --primary-surface: #4c6ef5;
@@ -36,10 +40,9 @@
     0px 1px 1px rgba(3, 7, 18, 0.1), 0px 5px 5px rgba(3, 7, 18, 0.08),
     0px 12px 12px rgba(3, 7, 18, 0.06), 0px 20px 20px rgba(3, 7, 18, 0.04),
     0px 32px 32px rgba(3, 7, 18, 0.02);
-  // Values
+  // App
   --articles-width: 560px;
   --feeds-width: 360px;
-  --header-height: 60px;
   color-scheme: light;
 }
 
@@ -53,6 +56,10 @@
   --foreground: #212529;
   --gray-surface: #343a40;
   --hover-surface: #495057;
+  --input-border: #868e96;
+  --input-dark-border: #ced4da;
+  --input-light-border: #495057;
+  --input-surface: var(--foreground);
   --light-border: #495057;
   --light-text: #adb5bd;
   --primary-surface: #bac8ff;

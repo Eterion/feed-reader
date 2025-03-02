@@ -11,16 +11,18 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <div :class="[$style.sidebar, $style.feeds]">
-    <div :class="$style.sidebar_scrollable">
-      <RouterView name="feeds" />
+  <Teleport to="body">
+    <div :class="[$style.sidebar, $style.feeds]">
+      <div :class="$style.sidebar_scrollable">
+        <RouterView name="feeds" />
+      </div>
     </div>
-  </div>
-  <div :class="[$style.sidebar, $style.articles]">
-    <div :class="$style.sidebar_scrollable">
-      <RouterView name="articles" />
+    <div :class="[$style.sidebar, $style.articles]">
+      <div :class="$style.sidebar_scrollable">
+        <RouterView name="articles" />
+      </div>
     </div>
-  </div>
+  </Teleport>
   <main :class="$style.main">
     <RouterView />
   </main>

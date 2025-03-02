@@ -3,6 +3,8 @@ import type { Promisable } from 'type-fest';
 import BaseButton from './BaseButton.vue';
 import BaseModal from './BaseModal.vue';
 import ButtonGroup from './ButtonGroup.vue';
+import InputField from './InputField.vue';
+import TextInput from './TextInput.vue';
 
 const props = defineProps<{
   defaultValue?: string;
@@ -20,15 +22,15 @@ const emit = defineEmits<{
 }>();
 
 const visible = defineModel<boolean>('visible');
-const value = ref(props.defaultValue);
+const modelValue = ref(props.defaultValue);
 const isLoading = ref(false);
 
 async function submitForm(event: Event) {
   event.preventDefault();
-  if (value.value) {
+  if (modelValue.value) {
     try {
       isLoading.value = true;
-      await props.onOk?.(value.value);
+      await props.onOk?.(modelValue.value);
     } finally {
       isLoading.value = false;
     }
@@ -59,8 +61,9 @@ useEventListener(
     @shown="$emit('shown')">
     <form @submit="submitForm">
       <div :class="$style.main">
-        <p>{{ message }}</p>
-        <input v-model="value" type="text" required />
+        <InputField :label="message" required>
+          <TextInput v-model="modelValue" autofocus />
+        </InputField>
       </div>
       <ButtonGroup>
         <BaseButton :loading="isLoading" primary submit>Ok</BaseButton>

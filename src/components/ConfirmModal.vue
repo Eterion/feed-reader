@@ -48,7 +48,7 @@ useEventListener(
   <BaseModal
     v-model:visible="visible"
     :title="title"
-    :width="460"
+    :width="360"
     @hidden="$emit('hidden')"
     @hide="$emit('hide')"
     @show="$emit('show')"

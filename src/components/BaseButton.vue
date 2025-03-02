@@ -44,6 +44,7 @@ defineEmits<{
   justify-content: center;
   padding: 6px 12px;
   text-align: center;
+  white-space: nowrap;
   &:active {
     --button-hover: oklch(from var(--button-bg) calc(l * 0.9) c h);
   }

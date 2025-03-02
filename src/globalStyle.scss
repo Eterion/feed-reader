@@ -6,7 +6,11 @@
 }
 
 :root {
-  --backdrop-surface: #{rgba(#000, 0.5)};
+  // App
+  --articles-width: 560px;
+  --feeds-width: 360px;
+  // Colors
+  --backdrop-surface: #{rgba(#fff, 0.25)};
   --background: #fff;
   --border: #dee2e6;
   --danger-surface: #fa5252;
@@ -40,14 +44,12 @@
     0px 1px 1px rgba(3, 7, 18, 0.1), 0px 5px 5px rgba(3, 7, 18, 0.08),
     0px 12px 12px rgba(3, 7, 18, 0.06), 0px 20px 20px rgba(3, 7, 18, 0.04),
     0px 32px 32px rgba(3, 7, 18, 0.02);
-  // App
-  --articles-width: 560px;
-  --feeds-width: 360px;
   color-scheme: light;
 }
 
 .dark {
-  --backdrop-surface: #{rgba(#000, 0.75)};
+  // Colors
+  --backdrop-surface: #{rgba(#000, 0.25)};
   --background: #212529;
   --border: #495057;
   --danger-surface: #ffa8a8;
@@ -68,6 +70,19 @@
   --text-on-danger-surface: #212529;
   --text-on-primary-surface: #212529;
   --text: #f8f9fa;
+  // Shadows
+  --low-shadow:
+    0px 0px 0px rgba(3, 7, 18, 0.02), 0px 1px 1px rgba(3, 7, 18, 0.04),
+    1px 1px 1px rgba(3, 7, 18, 0.06), 1px 3px 3px rgba(3, 7, 18, 0.08),
+    2px 4px 4px rgba(3, 7, 18, 0.1);
+  --medium-shadow:
+    0px 1px 1px rgba(3, 7, 18, 0.02), 1px 3px 3px rgba(3, 7, 18, 0.04),
+    3px 6px 6px rgba(3, 7, 18, 0.06), 5px 10px 10px rgba(3, 7, 18, 0.08),
+    8px 16px 16px rgba(3, 7, 18, 0.1);
+  --high-shadow:
+    2px 3px 3px rgba(3, 7, 18, 0.04), 6px 13px 13px rgba(3, 7, 18, 0.08),
+    14px 29px 29px rgba(3, 7, 18, 0.12), 26px 51px 51px rgba(3, 7, 18, 0.16),
+    40px 80px 80px rgba(3, 7, 18, 0.2);
   color-scheme: dark;
 }
 
@@ -100,4 +115,20 @@ html {
 // Remove unwanted space around media elements
 :where(img, svg) {
   display: block;
+}
+
+// Custom scrollbar style
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+// Draggable scrollbar thumb
+::-webkit-scrollbar-thumb {
+  background-color: oklch(from var(--border) l c h / 0.75);
+  &:hover {
+    background-color: oklch(from var(--dark-border) l c h / 0.75);
+  }
+  &:active {
+    background-color: var(--dark-border);
+  }
 }

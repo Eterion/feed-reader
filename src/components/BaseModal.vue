@@ -57,6 +57,7 @@ const hide = () => (visible.value = false);
 }
 
 .backdrop {
+  backdrop-filter: blur(128px);
   background-color: var(--backdrop-surface);
   bottom: 0;
   left: 0;

@@ -140,8 +140,8 @@ const mappedItems = computed(() => {
 <style module lang="scss">
 .el {
   background-color: var(--foreground);
-  border-radius: 12px;
   border: 1px solid var(--border);
+  border-radius: 12px;
   box-shadow: var(--low-shadow);
   padding: 6px;
   &[data-placement='right-start'],
@@ -199,7 +199,7 @@ const mappedItems = computed(() => {
     width: 16px;
     :where(svg) {
       height: inherit;
-      width: inhert;
+      width: inherit;
     }
   }
 }

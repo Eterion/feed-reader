@@ -6,9 +6,9 @@
 
 <style module lang="scss">
 .el {
-  justify-content: flex-end;
-  display: flex;
-  column-gap: 6px;
   align-items: center;
+  column-gap: 6px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

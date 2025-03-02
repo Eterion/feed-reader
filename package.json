@@ -8,6 +8,7 @@
   "scripts": {
     "build": "vue-tsc -b && vite build",
     "dev": "vite",
+    "lint-style": "stylelint --ignore-path .gitignore **/*.{scss,vue}",
     "preview": "vite preview",
     "type-check": "vue-tsc -b"
   },
@@ -30,6 +31,10 @@
     "electron": "^34.3.0",
     "prettier": "^3.5.2",
     "sass": "^1.85.0",
+    "stylelint": "^16.15.0",
+    "stylelint-config-recommended-scss": "^14.1.0",
+    "stylelint-config-recommended-vue": "^1.6.0",
+    "stylelint-order": "^6.0.4",
     "tsx": "^4.19.3",
     "type-fest": "^4.35.0",
     "typescript": "^5.7.3",

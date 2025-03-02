@@ -89,8 +89,8 @@ function ensureMarkRead() {
     font-weight: bold;
   }
   &.active {
-    color: var(--text-on-primary-surface);
     background-color: var(--primary-surface);
+    color: var(--text-on-primary-surface);
   }
   &:not(.active).open,
   &:not(.active):hover {

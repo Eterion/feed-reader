@@ -18,8 +18,8 @@ const isDark = useDark();
 .el {
   align-items: center;
   background-color: transparent;
-  border-radius: 6px;
   border: none;
+  border-radius: 6px;
   color: var(--light-text);
   cursor: pointer;
   display: flex;

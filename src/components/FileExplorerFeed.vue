@@ -122,8 +122,8 @@ function onDragstart(event: DragEvent) {
   }
   &.active {
     --rss-color: currenColor;
-    color: var(--text-on-primary-surface);
     background-color: var(--primary-surface);
+    color: var(--text-on-primary-surface);
   }
   &:not(.active).open,
   &:not(.active):hover {
@@ -155,9 +155,9 @@ function onDragstart(event: DragEvent) {
 
 .name {
   overflow: hidden;
+  padding: 6px 0;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 6px 0;
 }
 
 .count {

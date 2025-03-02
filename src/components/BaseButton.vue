@@ -36,20 +36,20 @@ defineEmits<{
   --button-hover: var(--hover-surface);
   align-items: center;
   background-color: var(--button-bg);
-  border-radius: 6px;
   border: none;
+  border-radius: 6px;
   color: var(--button-text);
   display: flex;
   font-size: 0.9375rem;
   justify-content: center;
   padding: 6px 12px;
   text-align: center;
+  &:active {
+    --button-hover: oklch(from var(--button-bg) calc(l * 0.9) c h);
+  }
   &:not([disabled]):hover {
     background-color: var(--button-hover);
     cursor: pointer;
-  }
-  &:active {
-    --button-hover: oklch(from var(--button-bg) calc(l * 0.9) c h);
   }
 }
 

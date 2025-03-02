@@ -130,8 +130,8 @@ const contextMenuItems = computed<
 .el {
   align-items: center;
   background-color: transparent;
-  border-radius: 6px;
   border: none;
+  border-radius: 6px;
   color: var(--text);
   display: flex;
   font-size: 0.875rem;
@@ -165,16 +165,16 @@ const contextMenuItems = computed<
   justify-content: center;
   width: 36px;
   :where(svg) {
-    width: 18px;
     height: 18px;
+    width: 18px;
   }
 }
 
 .name {
   overflow: hidden;
+  padding: 6px 0;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 6px 0;
 }
 
 .count {

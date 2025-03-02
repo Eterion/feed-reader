@@ -34,9 +34,10 @@ const timesAgo = computed(() => {
 
 <style module lang="scss">
 .button {
+  align-items: center;
   background-color: transparent;
-  border-radius: 6px;
   border: none;
+  border-radius: 6px;
   color: var(--light-text);
   column-gap: 6px;
   display: flex;
@@ -45,7 +46,6 @@ const timesAgo = computed(() => {
   text-align: right;
   transition-duration: 200ms;
   transition-property: background-color, color;
-  align-items: center;
   &:not([disabled]):hover {
     background-color: var(--hover-surface);
     color: var(--text);

@@ -36,6 +36,10 @@
     0px 1px 1px rgba(3, 7, 18, 0.1), 0px 5px 5px rgba(3, 7, 18, 0.08),
     0px 12px 12px rgba(3, 7, 18, 0.06), 0px 20px 20px rgba(3, 7, 18, 0.04),
     0px 32px 32px rgba(3, 7, 18, 0.02);
+  // Values
+  --articles-width: 560px;
+  --feeds-width: 360px;
+  --header-height: 60px;
   color-scheme: light;
 }
 
@@ -60,18 +64,13 @@
   color-scheme: dark;
 }
 
-:root {
-  --feeds-width: 360px;
-  --articles-width: 560px;
-}
-
 html {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
   background-color: var(--background);
   color: var(--text);
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
   font-synthesis: none;
   font-weight: 400;
   line-height: 1.6;

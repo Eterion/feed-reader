@@ -1,0 +1,12 @@
+{
+  "ignoreFiles": ["**/coverage/**/*", "**/dist/**/*", "**/node_modules/**/*"],
+  "plugins": ["stylelint-order"],
+  "defaultSeverity": "warning",
+  "extends": [
+    "stylelint-config-recommended-scss",
+    "stylelint-config-recommended-vue/scss"
+  ],
+  "rules": {
+    "order/properties-alphabetical-order": true
+  }
+}

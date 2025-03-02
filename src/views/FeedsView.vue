@@ -197,8 +197,8 @@ const contextMenuItems = computed<
 
 .addButton {
   background-color: var(--foreground);
-  border-radius: 6px;
   border: 1px solid var(--border);
+  border-radius: 6px;
   box-shadow: var(--low-shadow);
   color: var(--text);
   cursor: pointer;

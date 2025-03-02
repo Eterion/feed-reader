@@ -5,6 +5,7 @@ import BaseModal from './BaseModal.vue';
 import ButtonGroup from './ButtonGroup.vue';
 
 const props = defineProps<{
+  danger?: boolean;
   message: string;
   onOk?: () => Promisable<unknown>;
   title?: string;
@@ -56,7 +57,13 @@ useEventListener(
       <p>{{ message }}</p>
     </div>
     <ButtonGroup>
-      <BaseButton :loading="isLoading" primary @click="onOk">Ok</BaseButton>
+      <BaseButton
+        :loading="isLoading"
+        :primary="!danger"
+        :danger="danger"
+        @click="onOk">
+        Ok
+      </BaseButton>
       <BaseButton :disabled="isLoading" @click="$emit('cancel')">
         Cancel
       </BaseButton>

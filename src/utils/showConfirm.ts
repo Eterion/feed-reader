@@ -5,9 +5,11 @@ import { showAlert } from './showAlert';
 export function showConfirm(
   message: string,
   {
+    danger,
     onOk,
     title,
   }: {
+    danger?: boolean;
     onOk?: () => Promisable<unknown>;
     title?: string;
   } = {},
@@ -22,6 +24,7 @@ export function showConfirm(
         });
         return () =>
           h(ConfirmModal, {
+            danger,
             message,
             title,
             visible: visible.value,

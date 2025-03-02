@@ -109,6 +109,7 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
     },
     onRemoveFeed: (feedId) => {
       showConfirm('Remove feed?', {
+        danger: true,
         onOk: async () => {
           await feedsStore.removeFeed(feedId);
         },
@@ -116,6 +117,7 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
     },
     onRemoveFolder: async (folderId) => {
       showConfirm('Remove folder?', {
+        danger: true,
         onOk: async () => {
           await feedsStore.removeFolder(folderId);
         },

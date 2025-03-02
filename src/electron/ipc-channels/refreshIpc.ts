@@ -5,6 +5,7 @@ import { Notification } from 'electron';
 import type { IpcChannel } from '../types/IpcChannel';
 import { IpcName } from '../types/IpcName';
 import { downloadFeedArticles } from '../utils/downloadFeedArticles';
+import { win } from '../win';
 
 export const refreshIpc: IpcChannel<[], Database> = {
   name: IpcName.Refresh,
@@ -30,5 +31,9 @@ function showUnreadNotification(db: Database) {
       body: unreadArticles.slice(0, 3).join(' | '),
     });
     notificaiton.show();
+    notificaiton.on('click', () => {
+      notificaiton.close();
+      win?.show();
+    });
   }
 }

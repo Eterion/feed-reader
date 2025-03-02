@@ -2,6 +2,7 @@ import type { Article } from '@/types/Article';
 import type { Feed } from '@/types/Feed';
 import type { Folder } from '@/types/Folder';
 import { isEqual, remove } from 'es-toolkit';
+import { showAlert } from './showAlert';
 
 export const useFeedsStore = defineStore('feeds', () => {
   const articles = ref<Article[]>([]);
@@ -82,19 +83,19 @@ export const useFeedsStore = defineStore('feeds', () => {
   }
 
   async function renameFolder(folderId: number, name: string) {
-    alert('Not yet implemented');
+    showAlert('Not yet implemented');
   }
 
   async function moveFolder(folderId: number, parentId?: number) {
-    alert('Not yet implemented');
+    showAlert('Not yet implemented');
   }
 
   async function markFolderRead(folderId: number) {
-    alert('Not yet implemented');
+    showAlert('Not yet implemented');
   }
 
   async function markFolderUnread(folderId: number) {
-    alert('Not yet implemented');
+    showAlert('Not yet implemented');
   }
 
   return {

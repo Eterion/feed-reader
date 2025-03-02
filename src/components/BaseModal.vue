@@ -70,7 +70,7 @@ const hide = () => (visible.value = false);
   background-color: var(--foreground);
   border-radius: 12px;
   box-shadow: var(--high-shadow);
-  padding: 36px;
+  padding: 24px;
   position: relative;
 }
 
@@ -78,7 +78,7 @@ const hide = () => (visible.value = false);
   color: var(--light-text);
   font-size: 0.875rem;
   font-weight: normal;
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 }
 
 .vHidden {

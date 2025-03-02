@@ -1,4 +1,5 @@
 import { contextBridge } from 'electron';
+import type { Promisable } from 'type-fest';
 import type { createFolderIpc } from './ipc-channels/createFolderIpc';
 import type { markFeedReadIpc } from './ipc-channels/markFeedReadIpc';
 import type { markFeedUnreadIpc } from './ipc-channels/markFeedUnreadIpc';
@@ -36,7 +37,7 @@ declare global {
 type ExtractIpcWindow<TApi extends Record<string, any>> = {
   [K in keyof TApi]: TApi[K] extends (
     ...args: infer Params
-  ) => PromiseLike<infer R>
+  ) => Promisable<infer R>
     ? (...args: Params) => Promise<R>
     : never;
 };

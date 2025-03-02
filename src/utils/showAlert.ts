@@ -1,20 +1,18 @@
-import PromptModal from '@/components/PromptModal.vue';
+import AlertModal from '@/components/AlertModal.vue';
+import { isString } from 'es-toolkit';
 import type { Promisable } from 'type-fest';
-import { showAlert } from './showAlert';
 
-export function showPrompt(
-  message: string,
+export function showAlert(
+  message: unknown,
   {
-    defaultValue,
     onOk,
     title,
   }: {
-    defaultValue?: string;
-    onOk?: (value: string) => Promisable<unknown>;
+    onOk?: () => Promisable<unknown>;
     title?: string;
   } = {},
 ) {
-  return new Promise<string | void>((resolve) => {
+  return new Promise<void>((resolve) => {
     const el = document.createElement('div');
     const app = createApp({
       setup() {
@@ -23,23 +21,18 @@ export function showPrompt(
           visible.value = true;
         });
         return () =>
-          h(PromptModal, {
-            defaultValue,
-            message,
+          h(AlertModal, {
+            message: messageFromUnknown(message),
             title,
             visible: visible.value,
-            onOk: async (value) => {
+            onOk: async () => {
               try {
-                await onOk?.(value);
-                resolve(value);
+                await onOk?.();
+                resolve();
                 visible.value = false;
               } catch (e) {
                 showAlert(e);
               }
-            },
-            onCancel: () => {
-              resolve();
-              visible.value = false;
             },
             onHidden: () => {
               app.unmount();
@@ -51,4 +44,10 @@ export function showPrompt(
     document.body.appendChild(el);
     app.mount(el);
   });
+}
+
+function messageFromUnknown(value: unknown) {
+  if (isString(value)) return value;
+  if (value instanceof Error) return value.message;
+  return JSON.stringify(value);
 }

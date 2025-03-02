@@ -6,6 +6,7 @@ import FileExplorer from '@/components/FileExplorer.vue';
 import LastCheckedOn from '@/components/LastCheckedOn.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import { getFolderArticles } from '@/utils/getFolderArticles';
+import { showConfirm } from '@/utils/showConfirm';
 import { showPrompt } from '@/utils/showPrompt';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import type { IterableElement } from 'type-fest';
@@ -106,21 +107,19 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
     onMoveFolder: async ({ folderId, parentId }) => {
       await feedsStore.moveFolder(folderId, parentId);
     },
-    onRemoveFeed: async (feedId) => {
-      if (confirm('Really remove?'))
-        try {
+    onRemoveFeed: (feedId) => {
+      showConfirm('Remove feed?', {
+        onOk: async () => {
           await feedsStore.removeFeed(feedId);
-        } catch (e) {
-          alert(e);
-        }
+        },
+      });
     },
     onRemoveFolder: async (folderId) => {
-      if (confirm('Really remove?'))
-        try {
+      showConfirm('Remove folder?', {
+        onOk: async () => {
           await feedsStore.removeFolder(folderId);
-        } catch (e) {
-          alert(e);
-        }
+        },
+      });
     },
     onRenameFeed: async (feedId) => {
       showPrompt('New name', {
@@ -128,11 +127,7 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
           return feed.id === feedId;
         })?.name,
         onOk: async (name) => {
-          try {
-            await feedsStore.renameFeed(feedId, name);
-          } catch (e) {
-            alert(e);
-          }
+          await feedsStore.renameFeed(feedId, name);
         },
       });
     },
@@ -141,11 +136,7 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
         defaultValue: folders.value.find((folder) => folder.id === folderId)
           ?.name,
         onOk: async (name) => {
-          try {
-            await feedsStore.renameFolder(folderId, name);
-          } catch (e) {
-            alert(e);
-          }
+          await feedsStore.renameFolder(folderId, name);
         },
       });
     },

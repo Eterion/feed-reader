@@ -5,43 +5,37 @@ import BaseModal from './BaseModal.vue';
 import ButtonGroup from './ButtonGroup.vue';
 
 const props = defineProps<{
-  defaultValue?: string;
   message: string;
-  onOk?: (value: string) => Promisable<unknown>;
+  onOk?: () => Promisable<unknown>;
   title?: string;
 }>();
 
-const emit = defineEmits<{
+defineEmits<{
   hidden: [];
   hide: [];
   show: [];
   shown: [];
-  cancel: [];
 }>();
 
 const visible = defineModel<boolean>('visible');
-const value = ref(props.defaultValue);
 const isLoading = ref(false);
 
-async function submitForm(event: Event) {
-  event.preventDefault();
-  if (value.value) {
-    try {
-      isLoading.value = true;
-      await props.onOk?.(value.value);
-    } finally {
-      isLoading.value = false;
-    }
+async function onOk() {
+  try {
+    isLoading.value = true;
+    await props.onOk?.();
+  } finally {
+    isLoading.value = false;
   }
 }
 
 useEventListener(
   'keydown',
-  (event) => {
+  async (event) => {
     if (event.key === 'Escape' && visible.value) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      emit('cancel');
+      await onOk?.();
     }
   },
   { capture: true },
@@ -57,18 +51,12 @@ useEventListener(
     @hide="$emit('hide')"
     @show="$emit('show')"
     @shown="$emit('shown')">
-    <form @submit="submitForm">
-      <div :class="$style.main">
-        <p>{{ message }}</p>
-        <input v-model="value" type="text" required />
-      </div>
-      <ButtonGroup>
-        <BaseButton :loading="isLoading" primary submit>Ok</BaseButton>
-        <BaseButton :disabled="isLoading" @click="$emit('cancel')">
-          Cancel
-        </BaseButton>
-      </ButtonGroup>
-    </form>
+    <div :class="$style.main">
+      <p>{{ message }}</p>
+    </div>
+    <ButtonGroup>
+      <BaseButton :loading="isLoading" @click="onOk">Ok</BaseButton>
+    </ButtonGroup>
   </BaseModal>
 </template>
 

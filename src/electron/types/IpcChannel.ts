@@ -1,4 +1,5 @@
 import type { IpcMainInvokeEvent } from 'electron';
+import type { Promisable } from 'type-fest';
 import type { IpcName } from './IpcName';
 
 export interface IpcChannel<TParams extends any[] = any[], TReturn = void> {
@@ -6,5 +7,5 @@ export interface IpcChannel<TParams extends any[] = any[], TReturn = void> {
   handler: (
     event: IpcMainInvokeEvent,
     ...params: TParams
-  ) => PromiseLike<TReturn> | TReturn;
+  ) => Promisable<TReturn>;
 }

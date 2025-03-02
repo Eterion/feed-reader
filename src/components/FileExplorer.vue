@@ -61,6 +61,8 @@ const mappedFolders = computed(() => {
         depthLevel: props.depthLevel,
         open: isOpen,
         onCreateFolder: () => emit('createFolder', folder.id),
+        onMarkRead: () => emit('markFolderRead', folder.id),
+        onMarkUnread: () => emit('markFolderUnread', folder.id),
         onNewFeed: () => emit('newFeed', folder.id),
         onRemove: () => emit('removeFolder', folder.id),
         onRename: () => emit('renameFolder', folder.id),

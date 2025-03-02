@@ -1,20 +1,18 @@
-import PromptModal from '@/components/PromptModal.vue';
+import ConfirmModal from '@/components/ConfirmModal.vue';
 import type { Promisable } from 'type-fest';
 import { showAlert } from './showAlert';
 
-export function showPrompt(
+export function showConfirm(
   message: string,
   {
-    defaultValue,
     onOk,
     title,
   }: {
-    defaultValue?: string;
-    onOk?: (value: string) => Promisable<unknown>;
+    onOk?: () => Promisable<unknown>;
     title?: string;
   } = {},
 ) {
-  return new Promise<string | void>((resolve) => {
+  return new Promise<boolean>((resolve) => {
     const el = document.createElement('div');
     const app = createApp({
       setup() {
@@ -23,22 +21,21 @@ export function showPrompt(
           visible.value = true;
         });
         return () =>
-          h(PromptModal, {
-            defaultValue,
+          h(ConfirmModal, {
             message,
             title,
             visible: visible.value,
-            onOk: async (value) => {
+            onOk: async () => {
               try {
-                await onOk?.(value);
-                resolve(value);
+                await onOk?.();
+                resolve(true);
                 visible.value = false;
               } catch (e) {
                 showAlert(e);
               }
             },
             onCancel: () => {
-              resolve();
+              resolve(false);
               visible.value = false;
             },
             onHidden: () => {

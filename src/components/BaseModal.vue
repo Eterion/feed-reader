@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
+
 const props = withDefaults(
   defineProps<{
     title?: string;
@@ -19,6 +21,9 @@ defineEmits<{
 const visible = defineModel<boolean>('visible');
 const widthStyle = computed(() => ({ width: props.width + 'px' }));
 const hide = () => (visible.value = false);
+
+const modalRef = useTemplateRef('modal');
+useFocusTrap(modalRef, { immediate: true });
 </script>
 
 <template>
@@ -34,7 +39,7 @@ const hide = () => (visible.value = false);
       @after-leave="$emit('hidden')">
       <div v-if="visible" :class="$style.el">
         <div :class="$style.backdrop" />
-        <div :class="$style.modal" :style="widthStyle">
+        <div ref="modal" :class="$style.modal" :style="widthStyle">
           <h2 v-if="title" :class="$style.title">{{ title }}</h2>
           <slot :hide="hide" />
         </div>

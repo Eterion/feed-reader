@@ -1,7 +1,6 @@
 import type { Article } from '@/types/Article';
 import type { Feed } from '@/types/Feed';
 import type { Folder } from '@/types/Folder';
-import { isEqual, remove } from 'es-toolkit';
 import { showAlert } from './showAlert';
 
 export const useFeedsStore = defineStore('feeds', () => {
@@ -11,79 +10,77 @@ export const useFeedsStore = defineStore('feeds', () => {
   const lastCheckedOn = ref<Date>();
   const isLoading = ref(false);
 
-  async function refresh() {
+  async function refreshWithOptions({
+    skipDownloadOfArticles,
+  }: {
+    skipDownloadOfArticles?: boolean;
+  } = {}) {
+    const affectsLoading = !skipDownloadOfArticles;
     try {
-      isLoading.value = true;
-      const data = await window.ipcRenderer.refresh();
-      articles.value = data.articles;
+      if (affectsLoading) isLoading.value = true;
+      const data = await window.ipcRenderer.refresh({ skipDownloadOfArticles });
       feeds.value = data.feeds;
       folders.value = data.folders;
-      lastCheckedOn.value = new Date();
+      articles.value = data.articles;
+      if (affectsLoading) lastCheckedOn.value = new Date();
     } finally {
-      isLoading.value = false;
+      if (affectsLoading) isLoading.value = false;
     }
   }
 
+  async function refresh() {
+    await refreshWithOptions();
+  }
+
+  async function refreshWithoutDownloadingArticles() {
+    await refreshWithOptions({
+      skipDownloadOfArticles: true,
+    });
+  }
+
   async function newFeed(url: string, parentId?: number) {
-    const data = await window.ipcRenderer.newFeed({ url, parentId });
-    feeds.value.push(data);
-    await refresh();
+    await window.ipcRenderer.newFeed(url, parentId);
+    await refreshWithOptions();
   }
 
   async function removeFeed(feedId: string) {
     await window.ipcRenderer.removeFeed(feedId);
-    remove(feeds.value, (feed) => feed.id === feedId);
-    remove(articles.value, (article) => article.feedId === feedId);
+    await refreshWithoutDownloadingArticles();
   }
 
   async function moveFeed(feedId: string, parentId?: number) {
-    await window.ipcRenderer.moveFeed({ feedId, parentId });
-    const feed = feeds.value.find((feed) => feed.id === feedId);
-    if (feed) feed.parentId = parentId;
+    await window.ipcRenderer.moveFeed(feedId, parentId);
+    await refreshWithoutDownloadingArticles();
   }
 
   async function renameFeed(feedId: string, name: string) {
-    await window.ipcRenderer.renameFeed({ feedId, name });
-    const feed = feeds.value.find((feed) => feed.id === feedId);
-    if (feed) feed.name = name;
+    await window.ipcRenderer.renameFeed(feedId, name);
+    await refreshWithoutDownloadingArticles();
   }
 
   async function markFeedRead(payload: { feedId: string; link: string }[]) {
     await window.ipcRenderer.markFeedRead(payload);
-    const filteredArticles = articles.value.filter((article) => {
-      return payload.some((item) => {
-        return isEqual(item, { feedId: article.feedId, link: article.link });
-      });
-    });
-    filteredArticles.forEach((article) => {
-      article.isRead = true;
-    });
+    await refreshWithoutDownloadingArticles();
   }
 
   async function markFeedUnread(payload: { feedId: string; link: string }[]) {
     await window.ipcRenderer.markFeedUnread(payload);
-    const filteredArticles = articles.value.filter((article) => {
-      return payload.some((item) => {
-        return isEqual(item, { feedId: article.feedId, link: article.link });
-      });
-    });
-    filteredArticles.forEach((article) => {
-      article.isRead = false;
-    });
+    await refreshWithoutDownloadingArticles();
   }
 
   async function createFolder(name: string, parentId?: number) {
-    const data = await window.ipcRenderer.createFolder({ name, parentId });
-    folders.value.push(data);
+    await window.ipcRenderer.createFolder(name, parentId);
+    await refreshWithoutDownloadingArticles();
   }
 
   async function removeFolder(folderId: number) {
     await window.ipcRenderer.removeFolder(folderId);
-    remove(folders.value, (folder) => folder.id === folderId);
+    await refreshWithoutDownloadingArticles();
   }
 
   async function renameFolder(folderId: number, name: string) {
-    showAlert('Not yet implemented');
+    await window.ipcRenderer.renameFolder(folderId, name);
+    await refreshWithoutDownloadingArticles();
   }
 
   async function moveFolder(folderId: number, parentId?: number) {
@@ -113,6 +110,8 @@ export const useFeedsStore = defineStore('feeds', () => {
     moveFolder,
     newFeed,
     refresh,
+    refreshWithOptions,
+    refreshWithoutDownloadingArticles,
     removeFeed,
     removeFolder,
     renameFeed,

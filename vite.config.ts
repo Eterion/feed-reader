@@ -2,8 +2,12 @@ import vue from '@vitejs/plugin-vue';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import autoImport from 'unplugin-auto-import/vite';
-import { defineConfig } from 'vite';
+import { AliasOptions, defineConfig } from 'vite';
 import electron from 'vite-plugin-electron/simple';
+
+const alias: AliasOptions = {
+  '@': fileURLToPath(new URL('./src', import.meta.url)),
+};
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -21,21 +25,26 @@ export default defineConfig({
         entry: fileURLToPath(
           new URL('./src/electron/main.ts', import.meta.url),
         ),
+        vite: {
+          resolve: {
+            alias,
+          },
+        },
       },
       preload: {
         input: fileURLToPath(
           new URL('./src/electron/preload.ts', import.meta.url),
         ),
-        onstart(args) {
-          args.reload();
+        vite: {
+          resolve: {
+            alias,
+          },
         },
       },
     }),
   ],
   resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
+    alias,
   },
   css: {
     preprocessorOptions: {

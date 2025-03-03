@@ -9,7 +9,11 @@ async function ensureDbFile() {
   try {
     await access(DB_FILE, constants.W_OK);
   } catch {
-    await writeDb();
+    await writeDb({
+      articles: [],
+      feeds: [],
+      folders: [],
+    });
   }
 }
 
@@ -29,13 +33,7 @@ export async function readDb(): Promise<Database> {
   return db;
 }
 
-export async function writeDb(
-  db: Database = {
-    articles: [],
-    feeds: [],
-    folders: [],
-  },
-) {
+export async function writeDb(db: Database) {
   setTrayIconFromUnreadCount(db);
   await writeFile(DB_FILE, JSON.stringify(db), 'utf8');
 }

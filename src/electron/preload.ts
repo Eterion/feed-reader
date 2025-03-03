@@ -9,6 +9,7 @@ import type { refreshIpc } from './ipc-channels/refreshIpc';
 import type { removeFeedIpc } from './ipc-channels/removeFeedIpc';
 import type { removeFolderIpc } from './ipc-channels/removeFolder';
 import type { renameFeedIpc } from './ipc-channels/renameFeedIpc';
+import type { renameFolderIpc } from './ipc-channels/renameFolderIpc';
 import { IpcName } from './types/IpcName';
 import { invokeIpcChannel } from './utils/invokeIpcChannel';
 
@@ -24,6 +25,7 @@ export const ipcApi = {
   removeFeed: invoke<typeof removeFeedIpc>(IpcName.RemoveFeed),
   removeFolder: invoke<typeof removeFolderIpc>(IpcName.RemoveFolder),
   renameFeed: invoke<typeof renameFeedIpc>(IpcName.RenameFeed),
+  renameFolder: invoke<typeof renameFolderIpc>(IpcName.RenameFolder),
 };
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcApi);

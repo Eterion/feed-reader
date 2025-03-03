@@ -1,3 +1,4 @@
+import { isEqual, pick } from 'es-toolkit';
 import type { IpcChannel } from '../types/IpcChannel';
 import { IpcName } from '../types/IpcName';
 import { readDb, writeDb } from '../utils/readAndWriteDb';
@@ -8,16 +9,15 @@ export const markFeedUnreadIpc: IpcChannel<
   name: IpcName.MarkFeedUnread,
   handler: async (_event, payload) => {
     const db = await readDb();
-    const articles = db.articles.filter((article) => {
-      return payload.some((item) => {
-        const isSameFeed = item.feedId === article.feedId;
-        const isSameLink = item.link === article.link;
-        return isSameFeed && isSameLink;
+    db.articles
+      .filter((article) => {
+        return payload.some((payloadItem) => {
+          return isEqual(payloadItem, pick(article, ['feedId', 'link']));
+        });
+      })
+      .forEach((article) => {
+        article.isRead = false;
       });
-    });
-    articles.forEach((article) => {
-      article.isRead = false;
-    });
     await writeDb(db);
   },
 };

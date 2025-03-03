@@ -6,11 +6,11 @@ import { generateFolderId } from '../utils/generateFolderId';
 import { readDb, writeDb } from '../utils/readAndWriteDb';
 
 export const createFolderIpc: IpcChannel<
-  [{ name: string; parentId?: number }],
+  [name: string, parentId?: number],
   Folder
 > = {
   name: IpcName.CreateFolder,
-  handler: async (_event, { name, parentId }) => {
+  handler: async (_event, name, parentId) => {
     const db = await readDb();
     const folder: Folder = {
       id: await generateFolderId(),

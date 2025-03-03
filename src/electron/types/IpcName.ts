@@ -8,4 +8,5 @@ export enum IpcName {
   RemoveFeed = 'removeFeed',
   RemoveFolder = 'removeFolder',
   RenameFeed = 'renameFeed',
+  RenameFolder = 'renameFolder',
 }

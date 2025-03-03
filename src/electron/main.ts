@@ -8,6 +8,7 @@ import { refreshIpc } from './ipc-channels/refreshIpc';
 import { removeFeedIpc } from './ipc-channels/removeFeedIpc';
 import { removeFolderIpc } from './ipc-channels/removeFolder';
 import { renameFeedIpc } from './ipc-channels/renameFeedIpc';
+import { renameFolderIpc } from './ipc-channels/renameFolderIpc';
 import { handleIpcChannel } from './utils/handleIpcChannel';
 import { createWindow } from './win';
 
@@ -20,6 +21,7 @@ handleIpcChannel(refreshIpc);
 handleIpcChannel(removeFeedIpc);
 handleIpcChannel(removeFolderIpc);
 handleIpcChannel(renameFeedIpc);
+handleIpcChannel(renameFolderIpc);
 
 app.whenReady().then(() => {
   createWindow();

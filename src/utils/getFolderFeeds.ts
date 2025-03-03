@@ -1,16 +1,10 @@
+import type { Database } from '@/types/Database';
 import type { Feed } from '@/types/Feed';
-import type { Folder } from '@/types/Folder';
 import { getFolderFolders } from './getFolderFolders';
 
 export function getFolderFeeds(
   folderId: number,
-  {
-    feeds,
-    folders,
-  }: {
-    feeds: Feed[];
-    folders: Folder[];
-  },
+  { feeds, folders }: Pick<Database, 'feeds' | 'folders'>,
 ): Feed[] {
   return getFolderFolders(folderId, { folders })
     .map((folder) => folder.id)

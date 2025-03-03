@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useEscapeStack } from '@/utils/useEscapeStack';
 import type { Promisable } from 'type-fest';
 import BaseButton from './BaseButton.vue';
 import BaseModal from './BaseModal.vue';
@@ -30,17 +31,12 @@ async function onOk() {
   }
 }
 
-useEventListener(
-  'keydown',
-  async (event) => {
-    if (event.key === 'Escape' && visible.value) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      await onOk?.();
-    }
-  },
-  { capture: true },
-);
+async function onEscape() {
+  await onOk();
+  visible.value = false;
+}
+
+useEscapeStack(visible, onEscape);
 </script>
 
 <template>

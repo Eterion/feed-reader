@@ -26,6 +26,9 @@ export default defineConfig({
         input: fileURLToPath(
           new URL('./src/electron/preload.ts', import.meta.url),
         ),
+        onstart(args) {
+          args.reload();
+        },
       },
     }),
   ],

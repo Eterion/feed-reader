@@ -3,12 +3,12 @@ import ArticleItem from '@/components/ArticleItem.vue';
 import { useFeed } from '@/utils/useFeed';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import {
-  endOfDay,
   isAfter,
   isBefore,
   isToday,
   isWithinInterval,
   parseISO,
+  startOfDay,
   sub,
 } from 'date-fns';
 
@@ -55,7 +55,7 @@ const sortedArticles = computed(() => {
 });
 
 const groupedArticles = computed(() => {
-  const yesterday = sub(endOfDay(now), { days: 1 });
+  const yesterday = sub(startOfDay(now), { days: 1 });
   const weekAgo = sub(yesterday, { weeks: 1 });
   return [
     {

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { Feed } from '@/types/Feed';
 import type { ComponentProps } from 'vue-component-type-helpers';
 import EyeIcon from './@icons/EyeIcon.vue';
 import EyeOffIcon from './@icons/EyeOffIcon.vue';
+import GlobeIcon from './@icons/GlobeIcon.vue';
 import PencilIcon from './@icons/PencilIcon.vue';
 import RssIcon from './@icons/RssIcon.vue';
 import TrashIcon from './@icons/TrashIcon.vue';
@@ -11,6 +13,7 @@ const props = withDefaults(
   defineProps<{
     depthLevel?: number;
     feed: {
+      data: Feed['data'];
       id: string;
       name?: string;
       parentId?: number;
@@ -42,9 +45,21 @@ const link = useTemplateRef('link');
 const isContextMenuOpen = ref(false);
 const contextMenuItems = computed<
   ComponentProps<
-    typeof ContextMenu<'markRead' | 'markUnread' | 'rename' | 'remove'>
+    typeof ContextMenu<
+      'open' | 'viewFeed' | 'markRead' | 'markUnread' | 'rename' | 'remove'
+    >
   >['items']
 >(() => [
+  {
+    caption: 'Open in browser',
+    iconSlot: 'open',
+    onClick: () => window.open(props.feed.data.link),
+  },
+  {
+    caption: 'View feed',
+    iconSlot: 'viewFeed',
+    onClick: () => window.open(props.feed.url),
+  },
   {
     caption: 'Mark as read',
     iconSlot: 'markRead',
@@ -98,6 +113,8 @@ function onDragstart(event: DragEvent) {
       v-model:open="isContextMenuOpen"
       :reference-element="link"
       :items="contextMenuItems">
+      <template #open><GlobeIcon /></template>
+      <template #viewFeed><RssIcon /></template>
       <template #markRead><EyeIcon /></template>
       <template #markUnread><EyeOffIcon /></template>
       <template #remove><TrashIcon /></template>

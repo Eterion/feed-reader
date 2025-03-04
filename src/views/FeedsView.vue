@@ -27,11 +27,12 @@ const feeds = computed(() => {
   return feedsStore.feeds.map<
     IterableElement<ComponentProps<typeof FileExplorer>['feeds']>
   >((feed) => ({
+    data: feed.data,
     id: feed.id,
     name: feed.name,
     parentId: feed.parentId,
-    url: feed.url,
     unreadCount: getFeedArticles.value(feed.id).unread.length,
+    url: feed.url,
   }));
 });
 

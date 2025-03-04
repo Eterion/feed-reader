@@ -3,6 +3,7 @@ import type { ComponentProps } from 'vue-component-type-helpers';
 import type { RouteLocationRaw } from 'vue-router';
 import EyeIcon from './@icons/EyeIcon.vue';
 import EyeOffIcon from './@icons/EyeOffIcon.vue';
+import GlobeIcon from './@icons/GlobeIcon.vue';
 import ContextMenu from './ContextMenu.vue';
 
 const props = defineProps<{
@@ -27,18 +28,26 @@ const to = computed<RouteLocationRaw>(() => ({
 
 const isContextMenuOpen = ref(false);
 const contextMenuItems = computed<
-  ComponentProps<typeof ContextMenu<'markRead' | 'markUnread'>>['items']
+  ComponentProps<
+    typeof ContextMenu<'open' | 'markRead' | 'markUnread'>
+  >['items']
 >(() => [
   {
-    caption: 'Mark as read',
-    iconSlot: 'markRead',
-    onClick: () => emit('markRead'),
+    caption: 'Open in browser',
+    iconSlot: 'open',
+    onClick: () => window.open(props.link),
   },
-  {
-    caption: 'Mark as unread',
-    iconSlot: 'markUnread',
-    onClick: () => emit('markUnread'),
-  },
+  props.unread
+    ? {
+        caption: 'Mark as read',
+        iconSlot: 'markRead',
+        onClick: () => emit('markRead'),
+      }
+    : {
+        caption: 'Mark as unread',
+        iconSlot: 'markUnread',
+        onClick: () => emit('markUnread'),
+      },
 ]);
 
 function ensureMarkRead() {
@@ -69,6 +78,7 @@ function ensureMarkRead() {
       v-model:open="isContextMenuOpen"
       :reference-element="link"
       :items="contextMenuItems">
+      <template #open><GlobeIcon /></template>
       <template #markRead><EyeIcon /></template>
       <template #markUnread><EyeOffIcon /></template>
     </ContextMenu>

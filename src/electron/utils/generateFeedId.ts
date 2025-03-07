@@ -1,11 +1,12 @@
 import { randomBytes } from 'node:crypto';
-import { readDb } from './readAndWriteDb';
+import { useReadonlyDb } from './useDb';
 
 export async function generateFeedId() {
-  const { feeds } = await readDb();
-  let id: string;
-  do {
-    id = randomBytes(2).toString('hex');
-  } while (feeds.some((feed) => feed.id === id));
-  return id;
+  return await useReadonlyDb((db) => {
+    let id: string;
+    do {
+      id = randomBytes(2).toString('hex');
+    } while (db.feeds.some((feed) => feed.id === id));
+    return id;
+  });
 }

@@ -2,7 +2,7 @@ import type { Database } from '@/types/Database';
 import type { IpcChannel } from '../types/IpcChannel';
 import { IpcName } from '../types/IpcName';
 import { downloadFeedArticles } from '../utils/downloadFeedArticles';
-import { readDb } from '../utils/readAndWriteDb';
+import { useDb } from '../utils/useDb';
 
 export const refreshIpc: IpcChannel<
   [{ skipDownloadOfArticles?: boolean }?],
@@ -11,7 +11,7 @@ export const refreshIpc: IpcChannel<
   name: IpcName.Refresh,
   handler: async (_event, options) => {
     if (options?.skipDownloadOfArticles) {
-      return await readDb();
+      return await useDb((db) => db);
     } else {
       return await downloadFeedArticles();
     }

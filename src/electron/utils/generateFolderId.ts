@@ -1,7 +1,8 @@
-import { readDb } from './readAndWriteDb';
+import { useReadonlyDb } from './useDb';
 
 export async function generateFolderId() {
-  const db = await readDb();
-  const knownIds = db.folders.map(({ id }) => id);
-  return Math.max(0, ...knownIds) + 1;
+  return await useReadonlyDb((db) => {
+    const knownIds = db.folders.map(({ id }) => id);
+    return Math.max(0, ...knownIds) + 1;
+  });
 }

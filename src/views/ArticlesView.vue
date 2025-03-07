@@ -5,7 +5,6 @@ import { useFeedsStore } from '@/utils/useFeedsStore';
 import {
   isAfter,
   isBefore,
-  isToday,
   isWithinInterval,
   parseISO,
   startOfDay,
@@ -26,8 +25,8 @@ const articleLink = computed(() => {
   }
 });
 
-const now = new Date();
 const mappedArticles = computed(() => {
+  const now = new Date();
   return articles.value.map((article) => ({
     ...article,
     isUnread: !article.isRead,
@@ -55,26 +54,26 @@ const sortedArticles = computed(() => {
 });
 
 const groupedArticles = computed(() => {
-  const yesterday = sub(startOfDay(now), { days: 1 });
-  const weekAgo = sub(yesterday, { weeks: 1 });
+  const today = startOfDay(new Date());
+  const weekAgo = sub(today, { weeks: 1 });
   return [
     {
       title: 'Today',
       items: sortedArticles.value.filter((article) => {
-        return isToday(article.isoDate);
+        return isAfter(article.isoDate, today);
       }),
     },
     {
-      title: 'This Week',
+      title: 'This week',
       items: sortedArticles.value.filter((article) => {
         return isWithinInterval(article.isoDate, {
-          start: yesterday,
-          end: weekAgo,
+          start: weekAgo,
+          end: today,
         });
       }),
     },
     {
-      title: 'Two Weeks Ago',
+      title: 'More than 7 days ago',
       items: sortedArticles.value.filter((article) => {
         return isBefore(article.isoDate, weekAgo);
       }),

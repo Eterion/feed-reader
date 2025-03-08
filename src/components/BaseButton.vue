@@ -25,7 +25,8 @@ defineEmits<{
     :disabled="disabled || loading"
     :type="submit ? 'submit' : 'button'"
     @click="$emit('click', $event)">
-    <slot />
+    <div :class="$style.slot"><slot /></div>
+    <div v-if="loading" :class="$style.loader" />
   </button>
 </template>
 
@@ -54,10 +55,6 @@ defineEmits<{
   }
 }
 
-.loading {
-  cursor: wait;
-}
-
 .primary {
   --button-bg: var(--primary-surface);
   --button-text: var(--text-on-primary-surface);
@@ -68,5 +65,42 @@ defineEmits<{
   --button-bg: var(--danger-surface);
   --button-text: var(--text-on-danger-surface);
   --button-hover: oklch(from var(--button-bg) calc(l * 1.1) c h);
+}
+
+.loading {
+  cursor: wait;
+  position: relative;
+  .slot {
+    visibility: hidden;
+  }
+}
+
+.loader {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  &::after {
+    animation-duration: 1200ms;
+    animation-iteration-count: infinite;
+    animation-name: spin;
+    animation-timing-function: linear;
+    border: 2px solid color(from var(--button-text) srgb r g b / 0.15);
+    border-radius: 50%;
+    border-top-color: var(--button-text);
+    content: '';
+    height: 1em;
+    width: 1em;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

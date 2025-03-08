@@ -1,18 +1,40 @@
 <script lang="ts">
+interface MenuInstance {
+  id: string;
+  hide: () => unknown;
+}
+
 const useContextMenuStore = defineStore('contextMenu', () => {
-  const activeInstances = ref<{ id: string; close: () => unknown }[]>([]);
-  return { activeInstances };
+  const instances = ref<MenuInstance[]>([]);
+  function create(payload: MenuInstance) {
+    instances.value.push(payload);
+    function discard() {
+      remove(instances.value, (item) => {
+        return item.id === payload.id;
+      });
+    }
+    function hideAllExcept(id: MenuInstance['id']) {
+      instances.value.forEach((item) => {
+        if (item.id !== id) {
+          item.hide();
+        }
+      });
+    }
+    return { discard, hideAllExcept };
+  }
+  return { create, instances };
 });
 </script>
 
 <script setup lang="ts" generic="TIconSlot extends string = string">
+import { useEscapeStack } from '@/utils/useEscapeStack';
 import {
   autoUpdate,
   flip,
   useFloating,
   type VirtualElement,
 } from '@floating-ui/vue';
-import { cloneDeep, remove } from 'es-toolkit';
+import { ary, cloneDeep, remove } from 'es-toolkit';
 import type { Promisable } from 'type-fest';
 
 const props = defineProps<{
@@ -37,24 +59,18 @@ const { floatingStyles, placement } = useFloating(reference, floating, {
   whileElementsMounted: autoUpdate,
 });
 
-const contextMenuStore = useContextMenuStore();
-contextMenuStore.activeInstances.push({
-  id,
-  close: () => (isOpen.value = false),
-});
+const hide = () => (isOpen.value = false);
+const contextMenu = useContextMenuStore().create({ id, hide });
+const escapeStack = reactive(useEscapeStack(isOpen, hide));
+onClickOutside(floating, ary(hide, 0));
 
 onBeforeUnmount(() => {
-  remove(contextMenuStore.activeInstances, (item) => {
-    return item.id === id;
-  });
+  escapeStack.discard();
+  contextMenu.discard();
 });
 
 whenever(isOpen, () => {
-  contextMenuStore.activeInstances.forEach((item) => {
-    if (item.id !== id) {
-      item.close();
-    }
-  });
+  contextMenu.hideAllExcept(id);
 });
 
 watchImmediate(
@@ -88,10 +104,6 @@ useEventListener(
   { capture: true },
 );
 
-onClickOutside(floating, () => {
-  isOpen.value = false;
-});
-
 const mappedItems = computed(() => {
   return props.items.map((item) => ({
     ...item,
@@ -104,7 +116,7 @@ const mappedItems = computed(() => {
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport to="body" :disabled="!isOpen">
     <Transition
       :enter-from-class="$style.vHidden"
       :leave-to-class="$style.vHidden"
@@ -165,9 +177,6 @@ const mappedItems = computed(() => {
 .list {
   list-style: none;
   padding: 0;
-  &:where(li):not(:last-child) {
-    margin-bottom: 1px;
-  }
 }
 
 .item {

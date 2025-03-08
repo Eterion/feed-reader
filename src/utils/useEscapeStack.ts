@@ -46,6 +46,7 @@ export function useEscapeStack(
   tryOnBeforeUnmount(stop);
 
   return {
+    discard,
     id,
     stack,
   };

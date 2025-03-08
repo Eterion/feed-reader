@@ -35,13 +35,9 @@ const emit = defineEmits<{
   toggle: [event: Event];
 }>();
 
-defineOptions({
-  inheritAttrs: false,
-});
-
 const unreadCount = computed(() => props.folder.unreadCount ?? 0);
 
-const folderRef = useTemplateRef('folder');
+const folderRef = useTemplateRef('folderRef');
 const isContextMenuOpen = ref(false);
 const contextMenuItems = computed<
   ComponentProps<
@@ -91,7 +87,7 @@ const contextMenuItems = computed<
 
 <template>
   <button
-    ref="folder"
+    ref="folderRef"
     :class="[
       $style.el,
       {
@@ -100,7 +96,6 @@ const contextMenuItems = computed<
       },
     ]"
     type="button"
-    v-bind="$attrs"
     @click="$emit('toggle', $event)">
     <span v-for="n in depthLevel" :key="n" :class="$style.guide"></span>
     <span :class="$style.folder">
@@ -109,18 +104,18 @@ const contextMenuItems = computed<
     </span>
     <span :class="$style.name">{{ folder.name }}</span>
     <span v-if="unreadCount" :class="$style.count">({{ unreadCount }})</span>
+    <ContextMenu
+      v-model:open="isContextMenuOpen"
+      :reference-element="folderRef"
+      :items="contextMenuItems">
+      <template #createFolder><FolderIcon /></template>
+      <template #markRead><EyeIcon /></template>
+      <template #markUnread><EyeOffIcon /></template>
+      <template #newFeed><RssIcon /></template>
+      <template #remove><TrashIcon /></template>
+      <template #rename><PencilIcon /></template>
+    </ContextMenu>
   </button>
-  <ContextMenu
-    v-model:open="isContextMenuOpen"
-    :reference-element="folderRef"
-    :items="contextMenuItems">
-    <template #createFolder><FolderIcon /></template>
-    <template #markRead><EyeIcon /></template>
-    <template #markUnread><EyeOffIcon /></template>
-    <template #newFeed><RssIcon /></template>
-    <template #remove><TrashIcon /></template>
-    <template #rename><PencilIcon /></template>
-  </ContextMenu>
 </template>
 
 <style module lang="scss">

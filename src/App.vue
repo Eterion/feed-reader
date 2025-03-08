@@ -9,18 +9,19 @@ useIntervalFn(() => {
   feedsStore.refresh();
 }, minutesToMilliseconds(10));
 
-const feedsWidth = useLocalStorage('feedsWidth', 360);
-const articlesWidth = useLocalStorage('articlesWidth', 560);
+const feedsEdgePx = useLocalStorage('feeds-edge-px', 325);
+const articlesEdgeVw = useLocalStorage('articles-edge-vw', 45);
 const whatToResize = ref<'feeds' | 'articles'>();
 const mouse = reactive(useMouse({ type: 'client' }));
+const windowSize = reactive(useWindowSize());
 
 watchEffect(() => {
   switch (whatToResize.value) {
     case 'articles':
-      articlesWidth.value = mouse.x - feedsWidth.value;
+      articlesEdgeVw.value = (mouse.x / windowSize.width) * 100;
       break;
     case 'feeds':
-      feedsWidth.value = mouse.x;
+      feedsEdgePx.value = mouse.x;
   }
 });
 
@@ -66,6 +67,8 @@ useEventListener('pointerup', (event) => {
 
 <style module lang="scss">
 $-draggable-width: 6px;
+$-feeds-edge: v-bind('`${feedsEdgePx}px`');
+$-articles-edge: v-bind('`${articlesEdgeVw}vw`');
 
 .sidebar {
   border-right: 1px solid var(--border);
@@ -82,18 +85,16 @@ $-draggable-width: 6px;
 
 .feeds {
   left: 0;
-  width: v-bind('`${feedsWidth}px`');
+  width: $-feeds-edge;
 }
 
 .articles {
-  left: v-bind('`${feedsWidth}px`');
-  width: v-bind('`${articlesWidth}px`');
+  left: $-feeds-edge;
+  width: calc(#{$-articles-edge} - #{$-feeds-edge});
 }
 
 .main {
-  padding-left: calc(
-    v-bind('`${feedsWidth}px`') + v-bind('`${articlesWidth}px`')
-  );
+  padding-left: $-articles-edge;
 }
 
 .resizable {

@@ -10,6 +10,7 @@ export const newFeedIpc: IpcChannel<[url: string, parentId?: number], Feed> = {
   name: IpcName.NewFeed,
   handler: async (_event, url, parentId) => {
     new URL(url); // Check if url is valid
+    url = await getYoutubeFeedUrlIfAny(url);
     return await useDb(async (db) => {
       if (db.feeds.some((feed) => feed.url === url))
         throw new Error('Feed already exists.');
@@ -27,3 +28,15 @@ export const newFeedIpc: IpcChannel<[url: string, parentId?: number], Feed> = {
     });
   },
 };
+
+async function getYoutubeFeedUrlIfAny(url: string) {
+  if (url.includes('youtube') && !url.includes('feeds/videos.xml')) {
+    const response = await fetch(url, { method: 'GET' });
+    const text = await response.text();
+    const feedUrl = text.match(
+      /<link rel="alternate" type="application\/rss\+xml" title="RSS" href="(.+?)">/,
+    )?.[1];
+    if (feedUrl) return feedUrl;
+  }
+  return url;
+}

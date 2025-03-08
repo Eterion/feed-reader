@@ -27,7 +27,6 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   createFolder: [];
-  drop: [event: DragEvent];
   markRead: [];
   markUnread: [];
   newFeed: [];
@@ -102,9 +101,7 @@ const contextMenuItems = computed<
     ]"
     type="button"
     v-bind="$attrs"
-    @click="$emit('toggle', $event)"
-    @dragover.prevent
-    @drop="$emit('drop', $event)">
+    @click="$emit('toggle', $event)">
     <span v-for="n in depthLevel" :key="n" :class="$style.guide"></span>
     <span :class="$style.folder">
       <FolderOpenIcon v-if="open" />

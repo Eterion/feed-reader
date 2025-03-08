@@ -34,7 +34,17 @@ const emit = defineEmits<{
   renameFolder: [folderId: number];
 }>();
 
-const openedIds = useLocalStorage<number[]>('file-explorer/opened-ids', []);
+const openedIds = useLocalStorage<number[]>('file-explorer-opened-ids', []);
+
+function onDrop(event: DragEvent, parentId?: number) {
+  event.stopImmediatePropagation();
+  const feedId = event.dataTransfer?.getData('feedId');
+  if (feedId)
+    emit('moveFeed', {
+      feedId,
+      parentId,
+    });
+}
 
 const foldersInCurrentDepth = computed(() => {
   return props.folders.filter((folder) => {
@@ -66,14 +76,6 @@ const mappedFolders = computed(() => {
         onNewFeed: () => emit('newFeed', folder.id),
         onRemove: () => emit('removeFolder', folder.id),
         onRename: () => emit('renameFolder', folder.id),
-        onDrop: (event) => {
-          const feedId = event.dataTransfer?.getData('feedId');
-          if (feedId)
-            emit('moveFeed', {
-              feedId,
-              parentId: folder.id,
-            });
-        },
         onToggle: () => {
           isOpen
             ? remove(openedIds.value, (value) => value === folder.id)
@@ -127,8 +129,12 @@ const sortedFeeds = computed(() => {
 </script>
 
 <template>
-  <ul :class="$style.el">
-    <li v-for="folder in sortedFolders" :key="folder.id">
+  <ul :class="$style.el" @dragover.prevent @drop="onDrop($event, folderId)">
+    <li
+      v-for="folder in sortedFolders"
+      :key="folder.id"
+      @dragover.prevent
+      @drop="onDrop($event, folder.id)">
       <FileExplorerFolder v-bind="folder.folder" />
       <FileExplorer
         v-if="folder.folder.open"
@@ -159,8 +165,5 @@ const sortedFeeds = computed(() => {
 .el {
   list-style: none;
   padding: 0;
-  &:where(li):not(:last-child) {
-    margin-bottom: 1px;
-  }
 }
 </style>

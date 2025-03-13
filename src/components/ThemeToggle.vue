@@ -19,7 +19,7 @@ const isDark = useDark();
   align-items: center;
   background-color: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--small-radius);
   color: var(--light-text);
   cursor: pointer;
   display: flex;

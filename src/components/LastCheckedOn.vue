@@ -37,7 +37,7 @@ const timesAgo = computed(() => {
   align-items: center;
   background-color: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--small-radius);
   color: var(--light-text);
   column-gap: 6px;
   display: flex;

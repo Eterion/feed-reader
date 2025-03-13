@@ -153,7 +153,7 @@ const mappedItems = computed(() => {
 .el {
   background-color: var(--foreground);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   box-shadow: var(--low-shadow);
   padding: 6px;
   &[data-placement='right-start'],
@@ -182,7 +182,7 @@ const mappedItems = computed(() => {
 .item {
   --icon-color: var(--light-text);
   align-items: center;
-  border-radius: 6px;
+  border-radius: var(--small-radius);
   color: var(--text);
   column-gap: 1ch;
   display: flex;

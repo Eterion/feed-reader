@@ -74,7 +74,7 @@ useFocusTrap(modalRef, { immediate: true });
 
 .modal {
   background-color: var(--foreground);
-  border-radius: 12px;
+  border-radius: var(--radius);
   box-shadow: var(--high-shadow);
   padding: 24px;
   position: relative;

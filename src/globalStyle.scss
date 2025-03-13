@@ -8,7 +8,7 @@
 :root {
   // Colors
   --backdrop-surface: #{rgba(#fff, 0.25)};
-  --background: #fff;
+  --background: #f8f9fa;
   --border: #dee2e6;
   --danger-surface: #fa5252;
   --danger: #e03131;
@@ -41,13 +41,17 @@
     0px 1px 1px rgba(3, 7, 18, 0.1), 0px 5px 5px rgba(3, 7, 18, 0.08),
     0px 12px 12px rgba(3, 7, 18, 0.06), 0px 20px 20px rgba(3, 7, 18, 0.04),
     0px 32px 32px rgba(3, 7, 18, 0.02);
+  // Radius
+  --radius: 12px;
+  --small-radius: 6px;
+  --full-radius: 50%;
   color-scheme: light;
 }
 
 .dark {
   // Colors
   --backdrop-surface: #{rgba(#000, 0.25)};
-  --background: #212529;
+  --background: oklch(from #212529 calc(l * 0.9) c h);
   --border: #495057;
   --danger-surface: #ffa8a8;
   --danger: #ffa8a8;

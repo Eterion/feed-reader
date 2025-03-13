@@ -88,7 +88,7 @@ function ensureMarkRead() {
 <style module lang="scss">
 .link {
   align-items: center;
-  border-radius: 6px;
+  border-radius: var(--small-radius);
   color: var(--text);
   column-gap: 0.5ch;
   display: flex;
@@ -99,12 +99,26 @@ function ensureMarkRead() {
     font-weight: bold;
   }
   &.active {
-    background-color: var(--primary-surface);
-    color: var(--text-on-primary-surface);
+    background-color: var(--gray-surface);
+    position: relative;
+    &::before {
+      background-color: var(--primary);
+      border-radius: 3px;
+      bottom: 8px;
+      content: '';
+      display: block;
+      left: 0;
+      position: absolute;
+      top: 8px;
+      width: 2px;
+    }
   }
   &:not(.active).open,
   &:not(.active):hover {
     background-color: var(--hover-surface);
+  }
+  &:not(.active):active {
+    background-color: oklch(from var(--gray-surface) calc(l * 0.95) c h);
   }
 }
 

@@ -38,7 +38,7 @@ defineEmits<{
   align-items: center;
   background-color: var(--button-bg);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--small-radius);
   color: var(--button-text);
   display: flex;
   font-size: 0.9375rem;

@@ -46,7 +46,7 @@ onMounted(async () => {
   background-color: var(--input-surface);
   border: 1px solid var(--input-light-border);
   border-bottom-width: 0;
-  border-radius: 6px;
+  border-radius: var(--small-radius);
   display: flex;
   flex-grow: 1;
   position: relative;

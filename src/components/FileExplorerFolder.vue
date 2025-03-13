@@ -123,11 +123,11 @@ const contextMenuItems = computed<
   align-items: center;
   background-color: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--small-radius);
   color: var(--text);
   display: flex;
   font-size: 0.875rem;
-  padding: 0 10px;
+  padding: 0 10px 0 0;
   text-decoration: none;
   width: 100%;
   &.unread {

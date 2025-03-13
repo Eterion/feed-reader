@@ -127,24 +127,37 @@ function onDragstart(event: DragEvent) {
 .link {
   --rss-color: var(--light-text);
   align-items: center;
-  border-radius: 6px;
+  border-radius: var(--small-radius);
   color: var(--text);
   display: flex;
   font-size: 0.875rem;
-  padding: 0 10px;
+  padding: 0 10px 0 0;
   text-decoration: none;
   &.unread {
     --rss-color: var(--rss);
     font-weight: bold;
   }
   &.active {
-    --rss-color: currenColor;
-    background-color: var(--primary-surface);
-    color: var(--text-on-primary-surface);
+    background-color: var(--gray-surface);
+    position: relative;
+    &::before {
+      background-color: var(--primary);
+      border-radius: 3px;
+      bottom: 8px;
+      content: '';
+      display: block;
+      left: 0;
+      position: absolute;
+      top: 8px;
+      width: 2px;
+    }
   }
   &:not(.active).open,
   &:not(.active):hover {
     background-color: var(--hover-surface);
+  }
+  &:not(.active):active {
+    background-color: oklch(from var(--gray-surface) calc(l * 0.95) c h);
   }
 }
 

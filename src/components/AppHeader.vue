@@ -34,7 +34,6 @@ defineEmits<{
 <style module lang="scss">
 .el {
   align-items: center;
-  background-color: var(--foreground);
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;

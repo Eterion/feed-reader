@@ -71,9 +71,7 @@ $-feeds-edge: v-bind('`${feedsEdgePx}px`');
 $-articles-edge: v-bind('`${articlesEdgeVw}vw`');
 
 .sidebar {
-  border-right: 1px solid var(--border);
   bottom: 0;
-  padding-right: calc(#{$-draggable-width} / 2);
   position: fixed;
   top: 0;
   &_scrollable {
@@ -89,12 +87,19 @@ $-articles-edge: v-bind('`${articlesEdgeVw}vw`');
 }
 
 .articles {
+  background-color: var(--foreground);
+  border: 1px solid var(--border);
+  border-bottom-width: 0;
+  border-top-left-radius: 12px;
   left: $-feeds-edge;
   width: calc(#{$-articles-edge} - #{$-feeds-edge});
 }
 
 .main {
-  padding-left: $-articles-edge;
+  background-color: var(--foreground);
+  border-top: 1px solid var(--border);
+  margin-left: $-articles-edge;
+  min-height: 100dvh;
 }
 
 .resizable {

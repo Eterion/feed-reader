@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { routeName } from '@/routeName';
 import type { Feed } from '@/types/Feed';
 import type { ComponentProps } from 'vue-component-type-helpers';
 import type { RouteLocationRaw } from 'vue-router';
@@ -32,7 +33,9 @@ const emit = defineEmits<{
 
 const unreadCount = computed(() => props.feed.unreadCount ?? 0);
 const to = computed<RouteLocationRaw>(() => ({
+  name: routeName.feed,
   params: {
+    folderId: '',
     feedUrl: props.feed.url,
     articleLink: '',
   },

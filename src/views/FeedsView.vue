@@ -9,10 +9,12 @@ import { getFolderArticles } from '@/utils/getFolderArticles';
 import { showConfirm } from '@/utils/showConfirm';
 import { showPrompt } from '@/utils/showPrompt';
 import { useFeedsStore } from '@/utils/useFeedsStore';
+import { isNil } from 'es-toolkit';
 import type { IterableElement } from 'type-fest';
 import type { ComponentProps } from 'vue-component-type-helpers';
 
 const props = defineProps<{
+  folderId?: number;
   feedUrl?: string;
 }>();
 
@@ -33,8 +35,8 @@ const feeds = computed(() => {
   return feedsStore.feeds.map<
     IterableElement<ComponentProps<typeof FileExplorer>['feeds']>
   >((feed) => ({
-    isActive: feed.url === props.feedUrl,
     data: feed.data,
+    isActive: isNil(props.folderId) && feed.url === props.feedUrl,
     name: feed.name,
     parentId: feed.parentId,
     unreadCount: getReadUnreadFeedArticles.value(feed.url).unread.length,
@@ -47,6 +49,7 @@ const folders = computed(() => {
     IterableElement<ComponentProps<typeof FileExplorer>['folders']>
   >((folder) => ({
     id: folder.id,
+    isActive: folder.id === props.folderId,
     name: folder.name,
     parentId: folder.parentId,
     unreadCount: getFolderArticles(folder.id, {

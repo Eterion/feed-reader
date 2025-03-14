@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { routeName } from '@/routeName';
+import { isNotNil } from 'es-toolkit';
 import type { ComponentProps } from 'vue-component-type-helpers';
 import type { RouteLocationRaw } from 'vue-router';
 import EyeIcon from './@icons/EyeIcon.vue';
@@ -8,6 +10,8 @@ import ContextMenu from './ContextMenu.vue';
 
 const props = defineProps<{
   active?: boolean;
+  feedUrl: string;
+  folderId?: number;
   link: string;
   selected?: boolean;
   title?: string;
@@ -21,7 +25,10 @@ const emit = defineEmits<{
 
 const link = useTemplateRef('link');
 const to = computed<RouteLocationRaw>(() => ({
+  name: isNotNil(props.folderId) ? routeName.folder : routeName.feed,
   params: {
+    folderId: props.folderId,
+    feedUrl: props.feedUrl,
     articleLink: props.link,
   },
 }));

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ArticleItem from '@/components/ArticleItem.vue';
+import { getFolderArticles } from '@/utils/getFolderArticles';
 import { useFeed } from '@/utils/useFeed';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import {
@@ -10,22 +11,33 @@ import {
   startOfDay,
   sub,
 } from 'date-fns';
+import { isNotNil } from 'es-toolkit';
 
 const props = defineProps<{
+  folderId?: number;
   feedUrl?: string;
   articleLink?: string;
 }>();
 
 const feedsStore = useFeedsStore();
-const { articles } = useFeed(() => props.feedUrl);
+const feed = reactive(useFeed(() => props.feedUrl));
 
-const noFeedIsSelected = computed(() => {
-  return !props.feedUrl;
+const folderArticles = computed(() => {
+  if (isNotNil(props.folderId))
+    return getFolderArticles(props.folderId, {
+      articles: feedsStore.articles,
+      feeds: feedsStore.feeds,
+      folders: feedsStore.folders,
+    });
+});
+
+const articleList = computed(() => {
+  return folderArticles.value || feed.articles;
 });
 
 const mappedArticles = computed(() => {
   const now = new Date();
-  return articles.value.map((article) => ({
+  return articleList.value.map((article) => ({
     ...article,
     isUnread: !article.isRead,
     isActive: article.link === props.articleLink,
@@ -82,8 +94,7 @@ const groupedArticles = computed(() => {
 
 <template>
   <div :class="$style.el">
-    <div v-if="noFeedIsSelected"></div>
-    <div v-else-if="sortedArticles.length">
+    <div v-if="sortedArticles.length">
       <template v-for="group in groupedArticles" :key="group.title">
         <div v-if="group.items.length" :class="$style.group">
           <div :class="$style.group_title">{{ group.title }}</div>
@@ -91,6 +102,8 @@ const groupedArticles = computed(() => {
             <li v-for="article in group.items" :key="article.link">
               <ArticleItem
                 :active="article.isActive"
+                :feed-url="article.feedUrl"
+                :folder-id="folderId"
                 :link="article.link"
                 :title="article.data.title"
                 :unread="article.isUnread"

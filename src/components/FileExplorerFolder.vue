@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { routeName } from '@/routeName';
 import type { Folder } from '@/types/Folder';
 import type { ComponentProps } from 'vue-component-type-helpers';
+import type { RouteLocationRaw } from 'vue-router';
 import EyeIcon from './@icons/EyeIcon.vue';
 import EyeOffIcon from './@icons/EyeOffIcon.vue';
 import FolderIcon from './@icons/FolderIcon.vue';
@@ -13,7 +15,10 @@ import ContextMenu from './ContextMenu.vue';
 const props = withDefaults(
   defineProps<{
     depthLevel?: number;
-    folder: Folder & { unreadCount?: number };
+    folder: Folder & {
+      isActive?: boolean;
+      unreadCount?: number;
+    };
     open?: boolean;
   }>(),
   {
@@ -30,6 +35,15 @@ const emit = defineEmits<{
   rename: [];
   toggle: [event: Event];
 }>();
+
+const to = computed<RouteLocationRaw>(() => ({
+  name: routeName.folder,
+  params: {
+    folderId: props.folder.id,
+    feedUrl: '',
+    articleLink: '',
+  },
+}));
 
 const unreadCount = computed(() => props.folder.unreadCount ?? 0);
 
@@ -82,43 +96,47 @@ const contextMenuItems = computed<
 </script>
 
 <template>
-  <button
-    ref="folderRef"
-    :class="[
-      $style.el,
-      {
-        [$style.unread]: unreadCount > 0,
-        [$style.open]: isContextMenuOpen,
-      },
-    ]"
-    type="button"
-    @click="$emit('toggle', $event)">
-    <span v-for="n in depthLevel" :key="n" :class="$style.guide"></span>
-    <span :class="$style.folder">
-      <FolderOpenIcon v-if="open" />
-      <FolderIcon v-else />
-    </span>
-    <span :class="$style.name">{{ folder.name }}</span>
-    <span v-if="unreadCount" :class="$style.count">({{ unreadCount }})</span>
-    <ContextMenu
-      v-model:open="isContextMenuOpen"
-      :reference-element="folderRef"
-      :items="contextMenuItems">
-      <template #createFolder><FolderIcon /></template>
-      <template #markRead><EyeIcon /></template>
-      <template #markUnread><EyeOffIcon /></template>
-      <template #newFeed><RssIcon /></template>
-      <template #remove><TrashIcon /></template>
-      <template #rename><PencilIcon /></template>
-    </ContextMenu>
-  </button>
+  <RouterLink v-slot="{ href, navigate }" :to="to" custom>
+    <a
+      ref="folderRef"
+      :href="href"
+      :class="[
+        $style.el,
+        {
+          [$style.unread]: unreadCount > 0,
+          [$style.open]: isContextMenuOpen,
+          [$style.active]: folder.isActive,
+        },
+      ]"
+      @click="navigate($event)">
+      <span v-for="n in depthLevel" :key="n" :class="$style.guide"></span>
+      <button
+        :class="[$style.folder, { [$style.unread]: unreadCount > 0 }]"
+        type="button"
+        @click.stop.prevent="$emit('toggle', $event)">
+        <FolderOpenIcon v-if="open" />
+        <FolderIcon v-else />
+      </button>
+      <span :class="$style.name">{{ folder.name }}</span>
+      <span v-if="unreadCount" :class="$style.count">({{ unreadCount }})</span>
+      <ContextMenu
+        v-model:open="isContextMenuOpen"
+        :reference-element="folderRef"
+        :items="contextMenuItems">
+        <template #createFolder><FolderIcon /></template>
+        <template #markRead><EyeIcon /></template>
+        <template #markUnread><EyeOffIcon /></template>
+        <template #newFeed><RssIcon /></template>
+        <template #remove><TrashIcon /></template>
+        <template #rename><PencilIcon /></template>
+      </ContextMenu>
+    </a>
+  </RouterLink>
 </template>
 
 <style module lang="scss">
 .el {
   align-items: center;
-  background-color: transparent;
-  border: none;
   border-radius: var(--small-radius);
   color: var(--text);
   display: flex;
@@ -129,10 +147,28 @@ const contextMenuItems = computed<
   &.unread {
     font-weight: bold;
   }
-  &.open,
-  &:hover {
+  &.active {
+    background-color: var(--gray-surface);
+    position: relative;
+    &::before {
+      background-color: var(--primary);
+      border-radius: 3px;
+      bottom: 8px;
+      content: '';
+      display: block;
+      left: 0;
+      position: absolute;
+      top: 8px;
+      width: 2px;
+    }
+  }
+  &:not(.active).open,
+  &:not(.active):hover {
     background-color: var(--hover-surface);
     cursor: pointer;
+  }
+  &:not(.active):active {
+    background-color: oklch(from var(--gray-surface) calc(l * 0.95) c h);
   }
 }
 
@@ -147,11 +183,18 @@ const contextMenuItems = computed<
 
 .folder {
   align-items: center;
+  align-self: stretch;
+  background-color: transparent;
+  border: none;
   color: var(--light-text);
+  cursor: pointer;
   display: flex;
   flex-shrink: 0;
   justify-content: center;
   width: 36px;
+  &.unread {
+    color: var(--folder);
+  }
   :where(svg) {
     height: 18px;
     width: 18px;

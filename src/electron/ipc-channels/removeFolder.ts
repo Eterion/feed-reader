@@ -11,9 +11,9 @@ export const removeFolderIpc: IpcChannel<[folderId: number]> = {
     await useDb((db) => {
       // Remove all child feeds and articles
       const feeds = getFolderFeeds(folderId, db);
-      const feedIds = feeds.map((feed) => feed.id);
-      remove(db.feeds, (feed) => feedIds.includes(feed.id));
-      remove(db.articles, (article) => feedIds.includes(article.feedId));
+      const feedUrls = feeds.map((feed) => feed.url);
+      remove(db.feeds, (feed) => feedUrls.includes(feed.url));
+      remove(db.articles, (article) => feedUrls.includes(article.feedUrl));
       // Remove folder and child folders
       const folders = getFolderFolders(folderId, db);
       const folderIds = folders.map((folder) => folder.id).concat(folderId);

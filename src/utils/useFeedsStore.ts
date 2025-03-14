@@ -43,27 +43,27 @@ export const useFeedsStore = defineStore('feeds', () => {
     await refreshWithOptions();
   }
 
-  async function removeFeed(feedId: string) {
-    await window.ipcRenderer.removeFeed(feedId);
+  async function removeFeed(feedUrl: string) {
+    await window.ipcRenderer.removeFeed(feedUrl);
     await refreshWithoutDownloadingArticles();
   }
 
-  async function moveFeed(feedId: string, parentId?: number) {
-    await window.ipcRenderer.moveFeed(feedId, parentId);
+  async function moveFeed(feedUrl: string, parentId?: number) {
+    await window.ipcRenderer.moveFeed(feedUrl, parentId);
     await refreshWithoutDownloadingArticles();
   }
 
-  async function renameFeed(feedId: string, name: string) {
-    await window.ipcRenderer.renameFeed(feedId, name);
+  async function renameFeed(feedUrl: string, name: string) {
+    await window.ipcRenderer.renameFeed(feedUrl, name);
     await refreshWithoutDownloadingArticles();
   }
 
-  async function markFeedRead(payload: { feedId: string; link: string }[]) {
+  async function markFeedRead(payload: { feedUrl: string; link: string }[]) {
     await window.ipcRenderer.markFeedRead(payload);
     await refreshWithoutDownloadingArticles();
   }
 
-  async function markFeedUnread(payload: { feedId: string; link: string }[]) {
+  async function markFeedUnread(payload: { feedUrl: string; link: string }[]) {
     await window.ipcRenderer.markFeedUnread(payload);
     await refreshWithoutDownloadingArticles();
   }

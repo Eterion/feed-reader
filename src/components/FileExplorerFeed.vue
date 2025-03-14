@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Feed } from '@/types/Feed';
 import type { ComponentProps } from 'vue-component-type-helpers';
+import type { RouteLocationRaw } from 'vue-router';
 import EyeIcon from './@icons/EyeIcon.vue';
 import EyeOffIcon from './@icons/EyeOffIcon.vue';
 import GlobeIcon from './@icons/GlobeIcon.vue';
@@ -12,13 +13,9 @@ import ContextMenu from './ContextMenu.vue';
 const props = withDefaults(
   defineProps<{
     depthLevel?: number;
-    feed: {
-      data: Feed['data'];
-      id: string;
-      name?: string;
-      parentId?: number;
+    feed: Feed & {
+      isActive?: boolean;
       unreadCount?: number;
-      url: string;
     };
   }>(),
   {
@@ -34,12 +31,12 @@ const emit = defineEmits<{
 }>();
 
 const unreadCount = computed(() => props.feed.unreadCount ?? 0);
-const to = computed(() => `/${props.feed.id}`);
-
-const route = useRoute();
-const isActive = computed(() => {
-  return route.params.feedId === props.feed.id;
-});
+const to = computed<RouteLocationRaw>(() => ({
+  params: {
+    feedUrl: props.feed.url,
+    articleLink: '',
+  },
+}));
 
 const link = useTemplateRef('link');
 const isContextMenuOpen = ref(false);
@@ -84,7 +81,7 @@ const contextMenuItems = computed<
 ]);
 
 function onDragstart(event: DragEvent) {
-  event.dataTransfer?.setData('feedId', props.feed.id);
+  event.dataTransfer?.setData('feedUrl', props.feed.url);
 }
 </script>
 
@@ -96,7 +93,7 @@ function onDragstart(event: DragEvent) {
       :class="[
         $style.link,
         {
-          [$style.active]: isActive,
+          [$style.active]: feed.isActive,
           [$style.unread]: unreadCount > 0,
           [$style.open]: isContextMenuOpen,
         },

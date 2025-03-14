@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Folder } from '@/types/Folder';
 import type { ComponentProps } from 'vue-component-type-helpers';
 import EyeIcon from './@icons/EyeIcon.vue';
 import EyeOffIcon from './@icons/EyeOffIcon.vue';
@@ -12,12 +13,7 @@ import ContextMenu from './ContextMenu.vue';
 const props = withDefaults(
   defineProps<{
     depthLevel?: number;
-    folder: {
-      id: number;
-      name: string;
-      parentId?: number;
-      unreadCount?: number;
-    };
+    folder: Folder & { unreadCount?: number };
     open?: boolean;
   }>(),
   {

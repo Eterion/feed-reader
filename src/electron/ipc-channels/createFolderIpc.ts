@@ -14,7 +14,7 @@ export const createFolderIpc: IpcChannel<
     return await useDb(async (db) => {
       const folder: Folder = {
         id: await generateFolderId(),
-        name: name,
+        name,
         ...(isNotNil(parentId) && { parentId }),
       };
       db.folders.push(folder);

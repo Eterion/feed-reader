@@ -4,19 +4,27 @@ import RssIcon from '@/components/@icons/RssIcon.vue';
 import AppHeader from '@/components/AppHeader.vue';
 import ContextMenu from '@/components/ContextMenu.vue';
 import FileExplorer from '@/components/FileExplorer.vue';
+import { getFeedArticles } from '@/utils/getFeedArticles';
 import { getFolderArticles } from '@/utils/getFolderArticles';
 import { showConfirm } from '@/utils/showConfirm';
 import { showPrompt } from '@/utils/showPrompt';
+import { useDecodeURIComponent } from '@/utils/useDecodeURIComponent';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import type { IterableElement } from 'type-fest';
 import type { ComponentProps } from 'vue-component-type-helpers';
 
+const props = defineProps<{
+  feedUrl?: string;
+}>();
+
+const decodedFeedUrl = useDecodeURIComponent(() => props.feedUrl);
 const feedsStore = useFeedsStore();
 
-const getFeedArticles = computed(() => {
-  return (feedId: string) => {
-    const articles = feedsStore.articles;
-    const feedArticles = articles.filter((item) => item.feedId === feedId);
+const getReadUnreadFeedArticles = computed(() => {
+  return (feedUrl: string) => {
+    const feedArticles = getFeedArticles(feedUrl, {
+      articles: feedsStore.articles,
+    });
     const unread = feedArticles.filter((item) => !item.isRead);
     const read = feedArticles.filter((item) => item.isRead);
     return { unread, read };
@@ -27,11 +35,11 @@ const feeds = computed(() => {
   return feedsStore.feeds.map<
     IterableElement<ComponentProps<typeof FileExplorer>['feeds']>
   >((feed) => ({
+    isActive: feed.url === decodedFeedUrl.value,
     data: feed.data,
-    id: feed.id,
     name: feed.name,
     parentId: feed.parentId,
-    unreadCount: getFeedArticles.value(feed.id).unread.length,
+    unreadCount: getReadUnreadFeedArticles.value(feed.url).unread.length,
     url: feed.url,
   }));
 });
@@ -75,12 +83,12 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
     folders: folders.value,
     onCreateFolder: createFolder,
     onNewFeed: newFeed,
-    onMarkFeedRead: async (feedId) => {
-      const { unread } = getFeedArticles.value(feedId);
+    onMarkFeedRead: async (feedUrl) => {
+      const { unread } = getReadUnreadFeedArticles.value(feedUrl);
       if (unread.length)
         await feedsStore.markFeedRead(
           unread.map((article) => ({
-            feedId: article.feedId,
+            feedUrl: article.feedUrl,
             link: article.link,
           })),
         );
@@ -88,12 +96,12 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
     onMarkFolderRead: async (folderId) => {
       await feedsStore.markFolderRead(folderId);
     },
-    onMarkFeedUnread: async (feedId) => {
-      const { read } = getFeedArticles.value(feedId);
+    onMarkFeedUnread: async (feedUrl) => {
+      const { read } = getReadUnreadFeedArticles.value(feedUrl);
       if (read.length)
         await feedsStore.markFeedUnread(
           read.map((article) => ({
-            feedId: article.feedId,
+            feedUrl: article.feedUrl,
             link: article.link,
           })),
         );
@@ -101,19 +109,19 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
     onMarkFolderUnread: async (folderId) => {
       await feedsStore.markFolderUnread(folderId);
     },
-    onMoveFeed: async ({ feedId, parentId }) => {
-      await feedsStore.moveFeed(feedId, parentId);
+    onMoveFeed: async ({ feedUrl, parentId }) => {
+      await feedsStore.moveFeed(feedUrl, parentId);
     },
     onMoveFolder: async ({ folderId, parentId }) => {
       await feedsStore.moveFolder(folderId, parentId);
     },
-    onRemoveFeed: (feedId) => {
-      const feedName = feeds.value.find((feed) => feed.id === feedId)?.name;
+    onRemoveFeed: (feedUrl) => {
+      const feedName = feeds.value.find((feed) => feed.url === feedUrl)?.name;
       showConfirm(`Are you sure you want to remove **${feedName}** feed?`, {
         title: 'Remove Feed',
         danger: true,
         onOk: async () => {
-          await feedsStore.removeFeed(feedId);
+          await feedsStore.removeFeed(feedUrl);
         },
       });
     },
@@ -132,14 +140,14 @@ const fileExplorerProps = computed<ComponentProps<typeof FileExplorer>>(() => {
         },
       );
     },
-    onRenameFeed: async (feedId) => {
+    onRenameFeed: async (feedUrl) => {
       showPrompt('Enter new feed name', {
         defaultValue: feeds.value.find((feed) => {
-          return feed.id === feedId;
+          return feed.url === feedUrl;
         })?.name,
         title: 'Rename Feed',
         onOk: async (name) => {
-          await feedsStore.renameFeed(feedId, name);
+          await feedsStore.renameFeed(feedUrl, name);
         },
       });
     },

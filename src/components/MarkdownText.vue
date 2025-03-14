@@ -1,3 +1,7 @@
+<script lang="ts">
+const markdownIt = new MarkdownIt();
+</script>
+
 <script setup lang="ts">
 import MarkdownIt from 'markdown-it';
 
@@ -6,7 +10,7 @@ const props = defineProps<{
 }>();
 
 const html = computed(() => {
-  return MarkdownIt().render(props.markdown);
+  return markdownIt.render(props.markdown);
 });
 </script>
 

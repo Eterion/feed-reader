@@ -8,6 +8,6 @@ export function getFolderArticles(
   { articles, feeds, folders }: Database,
 ): Article[] {
   return getFolderFeeds(folderId, { feeds, folders }).flatMap((feed) =>
-    getFeedArticles(feed.id, { articles }),
+    getFeedArticles(feed.url, { articles }),
   );
 }

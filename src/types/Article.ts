@@ -2,7 +2,7 @@ import type RssParser from 'rss-parser';
 
 export interface Article {
   data: RssParser.Item;
-  feedId: string;
+  feedUrl: string;
   isRead: boolean;
   link: string;
 }

@@ -4,7 +4,7 @@ import { IpcName } from '../types/IpcName';
 import { useDb } from '../utils/useDb';
 
 export const markFeedUnreadIpc: IpcChannel<
-  [{ feedId: string; link: string }[]]
+  [{ feedUrl: string; link: string }[]]
 > = {
   name: IpcName.MarkFeedUnread,
   handler: async (_event, payload) => {
@@ -12,7 +12,7 @@ export const markFeedUnreadIpc: IpcChannel<
       db.articles
         .filter((article) => {
           return payload.some((payloadItem) => {
-            return isEqual(payloadItem, pick(article, ['feedId', 'link']));
+            return isEqual(payloadItem, pick(article, ['feedUrl', 'link']));
           });
         })
         .forEach((article) => {

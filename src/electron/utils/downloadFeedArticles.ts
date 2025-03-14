@@ -3,23 +3,23 @@ import { isAfter, parseISO } from 'date-fns';
 import RssParser from 'rss-parser';
 import { useDb } from './useDb';
 
-export async function downloadFeedArticles(feedIds: string[] = []) {
+export async function downloadFeedArticles(feedUrls: string[] = []) {
   return await useDb(async (db) => {
     const rssParser = new RssParser();
     const feeds = await Promise.all(
       db.feeds
         .filter((feed) => {
-          if (feedIds.length) return feedIds.includes(feed.id);
+          if (feedUrls.length) return feedUrls.includes(feed.url);
           return true;
         })
         .map(async (feed) => ({
-          feedId: feed.id,
+          feedUrl: feed.url,
           data: await rssParser.parseURL(feed.url),
         })),
     );
-    const items = feeds.flatMap(({ data, feedId }) =>
+    const items = feeds.flatMap(({ data, feedUrl }) =>
       data.items.map((item) => ({
-        feedId,
+        feedUrl,
         data: item,
       })),
     );
@@ -31,7 +31,7 @@ export async function downloadFeedArticles(feedIds: string[] = []) {
       const itemDate = getArticleDate(item.data);
       if (itemLink) {
         const downloadedArticle = db.articles.find((article) => {
-          const isSameFeed = article.feedId === item.feedId;
+          const isSameFeed = article.feedUrl === item.feedUrl;
           const isSameLink = article.link === itemLink;
           return isSameFeed && isSameLink;
         });
@@ -43,7 +43,7 @@ export async function downloadFeedArticles(feedIds: string[] = []) {
         } else {
           db.articles.push({
             data: item.data,
-            feedId: item.feedId,
+            feedUrl: item.feedUrl,
             isRead: false,
             link: itemLink,
           });

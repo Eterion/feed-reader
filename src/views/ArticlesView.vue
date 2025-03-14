@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ArticleItem from '@/components/ArticleItem.vue';
+import { useDecodeURIComponent } from '@/utils/useDecodeURIComponent';
 import { useFeed } from '@/utils/useFeed';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import {
@@ -12,21 +13,17 @@ import {
 } from 'date-fns';
 
 const props = defineProps<{
-  feedId?: string;
+  feedUrl?: string;
   articleLink?: string;
 }>();
 
+const decodedFeedUrl = useDecodeURIComponent(() => props.feedUrl);
+const decodedArticleLink = useDecodeURIComponent(() => props.articleLink);
 const feedsStore = useFeedsStore();
-const { articles } = useFeed(() => props.feedId);
-
-const decodedArticleLink = computed(() => {
-  if (props.articleLink) {
-    return decodeURIComponent(props.articleLink);
-  }
-});
+const { articles } = useFeed(decodedFeedUrl);
 
 const noFeedIsSelected = computed(() => {
-  return !props.feedId;
+  return !decodedFeedUrl.value;
 });
 
 const mappedArticles = computed(() => {
@@ -37,15 +34,15 @@ const mappedArticles = computed(() => {
     isActive: article.link === decodedArticleLink.value,
     isoDate: article.data.isoDate ? parseISO(article.data.isoDate) : now,
     markRead: async () => {
-      if (props.feedId)
+      if (decodedFeedUrl.value)
         await feedsStore.markFeedRead([
-          { feedId: props.feedId, link: article.link },
+          { feedUrl: decodedFeedUrl.value, link: article.link },
         ]);
     },
     markUnread: async () => {
-      if (props.feedId)
+      if (decodedFeedUrl.value)
         await feedsStore.markFeedUnread([
-          { feedId: props.feedId, link: article.link },
+          { feedUrl: decodedFeedUrl.value, link: article.link },
         ]);
     },
   }));

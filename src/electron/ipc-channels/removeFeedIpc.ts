@@ -3,13 +3,13 @@ import type { IpcChannel } from '../types/IpcChannel';
 import { IpcName } from '../types/IpcName';
 import { useDb } from '../utils/useDb';
 
-export const removeFeedIpc: IpcChannel<[feedId: string]> = {
+export const removeFeedIpc: IpcChannel<[feedUrl: string]> = {
   name: IpcName.RemoveFeed,
-  handler: async (_event, feedId) => {
+  handler: async (_event, feedUrl) => {
     await useDb((db) => {
-      if (db.feeds.some((feed) => feed.id === feedId)) {
-        remove(db.feeds, (feed) => feed.id === feedId);
-        remove(db.articles, (article) => article.feedId === feedId);
+      if (db.feeds.some((feed) => feed.url === feedUrl)) {
+        remove(db.feeds, (feed) => feed.url === feedUrl);
+        remove(db.articles, (article) => article.feedUrl === feedUrl);
       } else {
         throw new Error('Feed not found.');
       }

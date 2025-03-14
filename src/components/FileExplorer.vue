@@ -21,16 +21,16 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   createFolder: [parentId?: number];
-  markFeedRead: [feedId: string];
-  markFeedUnread: [feedId: string];
+  markFeedRead: [feedUrl: string];
+  markFeedUnread: [feedUrl: string];
   markFolderRead: [folderId: number];
   markFolderUnread: [folderId: number];
-  moveFeed: [payload: { feedId: string; parentId?: number }];
+  moveFeed: [payload: { feedUrl: string; parentId?: number }];
   moveFolder: [payload: { folderId: number; parentId?: number }];
   newFeed: [parentId?: number];
-  removeFeed: [feedId: string];
+  removeFeed: [feedUrl: string];
   removeFolder: [folderId: number];
-  renameFeed: [feedId: string];
+  renameFeed: [feedUrl: string];
   renameFolder: [folderId: number];
 }>();
 
@@ -38,10 +38,10 @@ const openedIds = useLocalStorage<number[]>('file-explorer-opened-ids', []);
 
 function onDrop(event: DragEvent, parentId?: number) {
   event.stopImmediatePropagation();
-  const feedId = event.dataTransfer?.getData('feedId');
-  if (feedId)
+  const feedUrl = event.dataTransfer?.getData('feedUrl');
+  if (feedUrl)
     emit('moveFeed', {
-      feedId,
+      feedUrl,
       parentId,
     });
 }
@@ -67,7 +67,7 @@ const mappedFolders = computed(() => {
       id: folder.id,
       name: folder.name,
       folder: {
-        folder: folder,
+        folder,
         depthLevel: props.depthLevel,
         open: isOpen,
         onCreateFolder: () => emit('createFolder', folder.id),
@@ -104,19 +104,19 @@ const feedsInCurrentDepth = computed(() => {
 
 const mappedFeeds = computed(() => {
   return feedsInCurrentDepth.value.map<{
-    id: string;
+    key: string;
     name: string;
     feed: ComponentProps<typeof FileExplorerFeed>;
   }>((feed) => ({
-    id: feed.id,
+    key: feed.url,
     name: feed.name || feed.url,
     feed: {
       depthLevel: props.depthLevel,
-      feed: feed,
-      onMarkRead: () => emit('markFeedRead', feed.id),
-      onMarkUnread: () => emit('markFeedUnread', feed.id),
-      onRemove: () => emit('removeFeed', feed.id),
-      onRename: () => emit('renameFeed', feed.id),
+      feed,
+      onMarkRead: () => emit('markFeedRead', feed.url),
+      onMarkUnread: () => emit('markFeedUnread', feed.url),
+      onRemove: () => emit('removeFeed', feed.url),
+      onRename: () => emit('renameFeed', feed.url),
     },
   }));
 });
@@ -155,7 +155,7 @@ const sortedFeeds = computed(() => {
         @rename-feed="$emit('renameFeed', $event)"
         @rename-folder="$emit('renameFolder', $event)" />
     </li>
-    <li v-for="feed in sortedFeeds" :key="feed.id">
+    <li v-for="feed in sortedFeeds" :key="feed.key">
       <FileExplorerFeed v-bind="feed.feed" />
     </li>
   </ul>

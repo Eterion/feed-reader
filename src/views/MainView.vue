@@ -1,26 +1,23 @@
 <script setup lang="ts">
+import { useDecodeURIComponent } from '@/utils/useDecodeURIComponent';
 import { useFeed } from '@/utils/useFeed';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import { parseISO } from 'date-fns';
 import sanitize from 'sanitize-html';
 
 const props = defineProps<{
-  feedId?: string;
+  feedUrl?: string;
   articleLink?: string;
 }>();
 
+const decodedFeedUrl = useDecodeURIComponent(() => props.feedUrl);
+const decodedArticleLink = useDecodeURIComponent(() => props.articleLink);
 const feedsStore = useFeedsStore();
-const { articles } = useFeed(() => props.feedId);
-
-const articleLink = computed(() => {
-  if (props.articleLink) {
-    return decodeURIComponent(props.articleLink);
-  }
-});
+const { articles } = useFeed(decodedFeedUrl);
 
 const article = computed(() => {
   return articles.value.find(({ link }) => {
-    return link === articleLink.value;
+    return link === decodedArticleLink.value;
   });
 });
 
@@ -52,12 +49,10 @@ const contentHtml = computed(() => {
 });
 
 watchImmediate(
-  [() => props.feedId, articleLink, () => article.value?.isRead],
-  async ([feedId, articleLink, isRead]) => {
-    if (feedId && articleLink && isRead === false)
-      await feedsStore.markFeedRead([
-        { feedId, link: decodeURIComponent(articleLink) },
-      ]);
+  [decodedFeedUrl, decodedArticleLink, () => article.value?.isRead],
+  async ([feedUrl, articleLink, isRead]) => {
+    if (feedUrl && articleLink && isRead === false)
+      await feedsStore.markFeedRead([{ feedUrl, link: articleLink }]);
   },
 );
 </script>

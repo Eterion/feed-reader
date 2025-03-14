@@ -7,10 +7,8 @@ const isDark = useDark();
 
 <template>
   <button type="button" :class="$style.el" @click="isDark = !isDark">
-    <Transition>
-      <MoonIcon v-if="isDark" />
-      <SunIcon v-else />
-    </Transition>
+    <MoonIcon v-if="isDark" />
+    <SunIcon v-else />
   </button>
 </template>
 

@@ -11,7 +11,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/:feedId?/:articleLink?',
+      path: '/:feedUrl?/:articleLink?',
       props: true,
       components: {
         feeds: FeedsView,

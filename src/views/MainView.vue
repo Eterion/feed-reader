@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useDecodeURIComponent } from '@/utils/useDecodeURIComponent';
 import { useFeed } from '@/utils/useFeed';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import { parseISO } from 'date-fns';
@@ -10,14 +9,12 @@ const props = defineProps<{
   articleLink?: string;
 }>();
 
-const decodedFeedUrl = useDecodeURIComponent(() => props.feedUrl);
-const decodedArticleLink = useDecodeURIComponent(() => props.articleLink);
 const feedsStore = useFeedsStore();
-const { articles } = useFeed(decodedFeedUrl);
+const { articles } = useFeed(() => props.feedUrl);
 
 const article = computed(() => {
   return articles.value.find(({ link }) => {
-    return link === decodedArticleLink.value;
+    return link === props.articleLink;
   });
 });
 
@@ -49,7 +46,7 @@ const contentHtml = computed(() => {
 });
 
 watchImmediate(
-  [decodedFeedUrl, decodedArticleLink, () => article.value?.isRead],
+  [() => props.feedUrl, () => props.articleLink, () => article.value?.isRead],
   async ([feedUrl, articleLink, isRead]) => {
     if (feedUrl && articleLink && isRead === false)
       await feedsStore.markFeedRead([{ feedUrl, link: articleLink }]);

@@ -8,7 +8,6 @@ import { getFeedArticles } from '@/utils/getFeedArticles';
 import { getFolderArticles } from '@/utils/getFolderArticles';
 import { showConfirm } from '@/utils/showConfirm';
 import { showPrompt } from '@/utils/showPrompt';
-import { useDecodeURIComponent } from '@/utils/useDecodeURIComponent';
 import { useFeedsStore } from '@/utils/useFeedsStore';
 import type { IterableElement } from 'type-fest';
 import type { ComponentProps } from 'vue-component-type-helpers';
@@ -17,7 +16,6 @@ const props = defineProps<{
   feedUrl?: string;
 }>();
 
-const decodedFeedUrl = useDecodeURIComponent(() => props.feedUrl);
 const feedsStore = useFeedsStore();
 
 const getReadUnreadFeedArticles = computed(() => {
@@ -35,7 +33,7 @@ const feeds = computed(() => {
   return feedsStore.feeds.map<
     IterableElement<ComponentProps<typeof FileExplorer>['feeds']>
   >((feed) => ({
-    isActive: feed.url === decodedFeedUrl.value,
+    isActive: feed.url === props.feedUrl,
     data: feed.data,
     name: feed.name,
     parentId: feed.parentId,

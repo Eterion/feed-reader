@@ -71,8 +71,8 @@ function ensureMarkRead() {
         },
       ]"
       @click="(navigate($event), ensureMarkRead())">
-      <span :class="$style.title">{{ title || link }}</span>
       <span v-if="unread" :class="$style.dot"></span>
+      <span :class="$style.title">{{ title || link }}</span>
     </a>
     <ContextMenu
       v-model:open="isContextMenuOpen"

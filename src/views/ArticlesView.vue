@@ -19,10 +19,14 @@ const props = defineProps<{
 const feedsStore = useFeedsStore();
 const { articles } = useFeed(() => props.feedId);
 
-const articleLink = computed(() => {
+const decodedArticleLink = computed(() => {
   if (props.articleLink) {
     return decodeURIComponent(props.articleLink);
   }
+});
+
+const noFeedIsSelected = computed(() => {
+  return !props.feedId;
 });
 
 const mappedArticles = computed(() => {
@@ -30,7 +34,7 @@ const mappedArticles = computed(() => {
   return articles.value.map((article) => ({
     ...article,
     isUnread: !article.isRead,
-    isActive: article.link === articleLink.value,
+    isActive: article.link === decodedArticleLink.value,
     isoDate: article.data.isoDate ? parseISO(article.data.isoDate) : now,
     markRead: async () => {
       if (props.feedId)
@@ -80,15 +84,11 @@ const groupedArticles = computed(() => {
     },
   ];
 });
-
-const notSelected = computed(() => {
-  return !props.feedId;
-});
 </script>
 
 <template>
   <div :class="$style.el">
-    <div v-if="notSelected"></div>
+    <div v-if="noFeedIsSelected"></div>
     <div v-else-if="sortedArticles.length">
       <template v-for="group in groupedArticles" :key="group.title">
         <div v-if="group.items.length" :class="$style.group">
